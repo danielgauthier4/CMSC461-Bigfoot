@@ -3,5 +3,23 @@ body {
     font: 18px Arial, sans-serif;
 }
 
-#mapid { height: 100%; width:70%; }
-#control {height:100%; width:30%; }
+#mapid { height: 100%; }
+
+* {
+  box-sizing: border-box;
+}
+
+.row {
+  display: flex;
+  height: 100%;
+}
+
+.left-column {
+  flex: 70%;
+  padding: 10px;
+}
+
+.right-column {
+  flex: 30%;
+  padding: 10px;
+}
