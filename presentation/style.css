@@ -1,0 +1,7 @@
+body {
+    background: lightyellow;
+    font: 18px Arial, sans-serif;
+}
+
+#mapid { height: 100%; width:70%; }
+#control {height:100%; width:30%; }
