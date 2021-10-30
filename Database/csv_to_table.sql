@@ -1,5 +1,20 @@
+/*
+TO RUN THIS SCRIPT
+	-Download MySQL.
+	-Enter cmd prompt and add MySQL path to PATH 
+		(e.g. for Windows: "set PATH=%PATH%;C:\Program Files\MySQL\MySQL Server 8.0\bin")
+	-cd to this script's directory and run MySQL client with --local_infile flag enabled
+		("mysql --local_infile=1 -u root -p")
+	-Run the script
+		("SOURCE csv_to_table.sql;")
+*/
 
-CREATE TABLE `covid_data`.`nyt_data` (
+
+CREATE DATABASE covid_data;
+
+USE covid_data;
+
+CREATE TABLE `covid_data`.`nyt_counts` (
   `date` VARCHAR(45) NULL,
   `county` VARCHAR(45) NULL,
   `state` VARCHAR(45) NULL,
@@ -44,9 +59,9 @@ CREATE TABLE `covid_data`.`state_counts` (
   `Staff.Vadmin` VARCHAR(45) NULL);
   
 
-LOAD DATA INFILE  
-'C:/ProgramData/MySQL/MySQL Server 8.0/Uploads/NyTimesdata.csv'
-INTO TABLE nyt_data
+LOAD DATA LOCAL INFILE  
+'csv/nytimes_counts.csv'
+INTO TABLE nyt_counts
 FIELDS TERMINATED BY ',' 
 ENCLOSED BY '"'
 LINES TERMINATED BY '\n'
@@ -54,8 +69,8 @@ IGNORE 1 ROWS
 (date,county,state,fips,cases,deaths);
 
 
-LOAD DATA INFILE  
-'C:/ProgramData/MySQL/MySQL Server 8.0/Uploads/historical_national_counts.csv'
+LOAD DATA LOCAL INFILE  
+'csv/historical_national_counts.csv'
 INTO TABLE national_counts
 FIELDS TERMINATED BY ',' 
 ENCLOSED BY '"'
@@ -64,8 +79,8 @@ IGNORE 1 ROWS
 (Date, Measure, Count, Reporting, Missing);
 
 
-LOAD DATA INFILE  
-'C:/ProgramData/MySQL/MySQL Server 8.0/Uploads/historical_state_counts.csv'
+LOAD DATA LOCAL INFILE  
+'csv/historical_state_counts.csv'
 INTO TABLE state_counts
 FIELDS TERMINATED BY ',' 
 ENCLOSED BY '"'
@@ -89,8 +104,8 @@ State,
 `Staff.Vadmin`);
 
 
-LOAD DATA INFILE  
-'C:/ProgramData/MySQL/MySQL Server 8.0/Uploads/historical_state_jurisdiction_counts.csv'
+LOAD DATA LOCAL INFILE  
+'csv/historical_state_jurisdiction_counts.csv'
 INTO TABLE state_jurisdiction_counts
 FIELDS TERMINATED BY ',' 
 ENCLOSED BY '"'
