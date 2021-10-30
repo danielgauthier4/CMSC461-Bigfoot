@@ -60,7 +60,7 @@ CREATE TABLE `covid_data`.`state_counts` (
   
 
 LOAD DATA LOCAL INFILE  
-'csv/nytimes_counts.csv'
+'../resources/csv/nytimes_counts.csv'
 INTO TABLE nyt_counts
 FIELDS TERMINATED BY ',' 
 ENCLOSED BY '"'
@@ -70,7 +70,7 @@ IGNORE 1 ROWS
 
 
 LOAD DATA LOCAL INFILE  
-'csv/historical_national_counts.csv'
+'../resources/csv/historical_national_counts.csv'
 INTO TABLE national_counts
 FIELDS TERMINATED BY ',' 
 ENCLOSED BY '"'
@@ -80,7 +80,7 @@ IGNORE 1 ROWS
 
 
 LOAD DATA LOCAL INFILE  
-'csv/historical_state_counts.csv'
+'../resources/csv/historical_state_counts.csv'
 INTO TABLE state_counts
 FIELDS TERMINATED BY ',' 
 ENCLOSED BY '"'
@@ -105,7 +105,7 @@ State,
 
 
 LOAD DATA LOCAL INFILE  
-'csv/historical_state_jurisdiction_counts.csv'
+'../resources/csv/historical_state_jurisdiction_counts.csv'
 INTO TABLE state_jurisdiction_counts
 FIELDS TERMINATED BY ',' 
 ENCLOSED BY '"'
