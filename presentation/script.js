@@ -1,15 +1,16 @@
-window.addEventListener("load", loadMap, false);
+window.addEventListener("load", setSingleCountyColor, false);
 
-function loadMap() {
-    var mymap = L.map('mapid').setView([37, -119], 6);
+function setSingleCountyColor() {
+    console.log("running");
 
-    L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw', {
-        maxZoom: 18,
-        attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, ' +
-            'Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
-        id: 'mapbox/streets-v11',
-        tileSize: 512,
-        zoomOffset: -1,
-        admin_level: 1
-    }).addTo(mymap);
+    var map = document.getElementById("mapid");
+
+    var doc = map.contentDocument;
+    var nevada = doc.getElementById("057 Nevada");
+    var alameda = doc.getElementById("001 Alameda");
+    var alpine = doc.getElementById("003 Alpine");
+
+    nevada.style["fill"] = "green";
+    alameda.style["fill"] = "blue";
+    alpine.style["fill"] = "red";
 }

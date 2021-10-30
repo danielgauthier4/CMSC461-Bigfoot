@@ -18,7 +18,7 @@ body {
 .header {
   /* position: relative; */
   align-content: center;
-  padding: .5rem 1rem .6rem;
+  padding: .5rem 1.5rem .6rem;
   font: bold 2.25rem "Roboto Slab", serif;
   color: white;
   background: #2763e8;
@@ -31,6 +31,8 @@ body {
   height: calc(100% - 4.36rem);
   display: flex;
   padding: 1.5rem;
+  max-width: 960px;
+  margin: auto;
 }
 
 .left-column {
@@ -44,7 +46,10 @@ body {
 
 #mapid {
   height: 100%;
+  width: 100%;
   border-radius: .5rem;
+  margin: auto;
+  background: #eee;
 }
 
 .controls {
@@ -85,7 +90,7 @@ summary {
     background: #1c3f8b;
   }
 
-  .controls {
+  .controls, #mapid {
     background: #424242;
   }
 
