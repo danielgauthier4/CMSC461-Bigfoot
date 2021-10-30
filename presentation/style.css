@@ -22,25 +22,49 @@ body {
   color: white;
   background: #2763e8;
   z-index: 10;
-  box-shadow: 0 .25rem .5rem rgba(0, 0, 0, .4);
+  box-shadow: 0 .25rem .5rem rgba(0, 0, 0, .32);
   border-bottom: 4px solid white;
 }
 
 .row {
   height: calc(100% - 4.36rem);
   display: flex;
+  padding: 1.5rem;
 }
 
 .left-column {
   flex: 60%;
-  padding: 1rem;
 }
 
 .right-column {
+  margin-left: 1.5rem;
   flex: 40%;
-  padding: 1rem;
 }
 
 #mapid {
   height: 100%;
+  border-radius: .5rem;
+}
+
+@media screen and (max-width: 960px) {
+  html {
+   font-size:calc(1vw/2.4 + 12px)
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  body {
+    background: #212121;
+    color: white;
+  }
+
+  .header {
+    background: #1c3f8b;
+  }
+
+  .controls {
+    background: #424242;
+    padding: 1rem;
+    border-radius: .5rem;
+  }
 }
