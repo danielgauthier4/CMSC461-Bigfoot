@@ -82,6 +82,11 @@ summary {
   margin-bottom: .75rem;
 }
 
+input[type="date"] {
+  border: none;
+  padding: .25rem;
+}
+
 @media screen and (max-width: 960px) {
   html {
    font-size:calc(1vw/2.4 + 12px)
@@ -118,5 +123,10 @@ summary {
 
   .controls[open] > summary {
     border-bottom: solid 1px rgba(255, 255, 255, .2);
+  }
+
+  input[type="date"] {
+    background: #212121;
+    color: white;
   }
 }
