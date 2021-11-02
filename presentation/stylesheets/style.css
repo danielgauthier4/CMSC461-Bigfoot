@@ -87,6 +87,14 @@ input[type="date"] {
   padding: .25rem;
 }
 
+.tooltip {
+  position: fixed;
+  transform: translate(-50%, -100%);
+  background: #212121;
+  padding: 0 .25rem;
+  border-radius: .125rem;
+}
+
 @media screen and (max-width: 960px) {
   html {
    font-size:calc(1vw/2.4 + 12px)
