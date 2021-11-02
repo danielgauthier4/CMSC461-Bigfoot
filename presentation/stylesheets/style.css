@@ -90,9 +90,10 @@ input[type="date"] {
 .tooltip {
   position: fixed;
   transform: translate(-50%, -100%);
-  background: #212121;
+  background: white;
   padding: 0 .25rem;
   border-radius: .125rem;
+  pointer-events: none;
 }
 
 @media screen and (max-width: 960px) {
@@ -136,5 +137,9 @@ input[type="date"] {
   input[type="date"] {
     background: #212121;
     color: white;
+  }
+
+  .tooltip {
+    background: #212121;
   }
 }

@@ -43,7 +43,7 @@ function setSingleCountyColor() {
 
             console.log(evt);
 
-            tip.innerText = element.id;
+            tip.innerText = element.getAttribute("name");
             tip.style.visibility = "unset";
         }, false);
 
