@@ -26,9 +26,10 @@ function setSingleCountyColor() {
         element.style["fill"] = 'hsl(192,80%,'+(Math.random()*70+15)+'%)';
 
         element.addEventListener("mousemove", (evt) => {
-            tip.style.left = evt.screenX + 'px';
-            tip.style.top = (evt.screenY + evt.clientY) / 2 + 'px';
-            tip.innertText = evt.screenX;
+            var mapBounds = map.getBoundingClientRect();
+
+            tip.style.left = evt.clientX + mapBounds.left + 'px';
+            tip.style.top = evt.clientY + mapBounds.top + 'px';
             console.log("moved");
         }, false);
         
@@ -43,7 +44,7 @@ function setSingleCountyColor() {
 
             console.log(evt);
 
-            tip.innerText = element.getAttribute("name");
+            tip.innerText = element.getAttribute("name") + " County";
             tip.style.visibility = "unset";
         }, false);
 
