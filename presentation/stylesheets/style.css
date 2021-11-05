@@ -44,12 +44,12 @@ body {
 }
 
 .left-column {
-  flex: 60%;
+  flex: 70%;
 }
 
 .right-column {
   margin-left: 1.5rem;
-  flex: 40%;
+  flex: 30%;
 }
 
 #mapid {
@@ -87,13 +87,14 @@ input[type="date"] {
   padding: .25rem;
 }
 
-.tooltip {
+#counties-tooltip {
   position: fixed;
-  transform: translate(-50%, -100%);
+  transform: translate(-25%, -17%);
   background: white;
   padding: 0 .25rem;
   border-radius: .125rem;
   pointer-events: none;
+  display: none;
 }
 
 @media screen and (max-width: 960px) {
@@ -106,7 +107,7 @@ input[type="date"] {
   }
 
   .row {
-    max-width: 533px;
+    max-width: 622px;
     flex-direction: column-reverse;
   }
 
@@ -139,7 +140,7 @@ input[type="date"] {
     color: white;
   }
 
-  .tooltip {
+  #counties-tooltip {
     background: #212121;
   }
 }
