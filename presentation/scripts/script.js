@@ -1,6 +1,7 @@
 var map;
 var mapDoc;
 var mapBounds;
+var mapTopUse;
 var counties;
 
 var tooltip;
@@ -11,6 +12,7 @@ function prepWindow() {
     map = document.getElementById("mapid");
     mapDoc = map.contentDocument;
     mapBounds = map.getBoundingClientRect();
+    mapTopUse = mapDoc.getElementById("top-layer");
     counties = Array.from(mapDoc.getElementsByClassName("county"));
 
     tooltip = document.getElementById("counties-tooltip");
@@ -32,11 +34,8 @@ function prepWindow() {
             element.style["stroke"] = '#fff';
             element.style["stroke-width"] = '3';
 
-            // move this county to the top of the parent's hierarchy
-            // so the stroke isn't overlapped by other counties
-            var parent = element.parentNode;
-            parent.removeChild(element);
-            parent.appendChild(element);
+            // re-draw this county on top of the rest of the svg
+            mapTopUse.setAttribute("href", "#" + element.id);
 
             tooltip.innerText = element.getAttribute("name") + " County";
             tooltip.style.display = "unset";
@@ -46,6 +45,10 @@ function prepWindow() {
         element.addEventListener("mouseout", (evt) => {
             element.style["stroke"] = null;
             element.style["stroke-width"] = null;
+
+            // reset the use element so the county isn't drawn on top anymore
+            mapTopUse.setAttribute("href", null);
+
             tooltip.style.display = null;
         }, false);
     });
