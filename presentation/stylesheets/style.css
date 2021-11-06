@@ -4,6 +4,7 @@ html, body {
 
 body {
   margin: 0;
+  min-width: 360px;
   font: 16px "Open Sans", sans-serif;
 }
 
@@ -37,6 +38,7 @@ body {
 
 .row {
   height: calc(100% - 4.36rem);
+  min-height: 28rem;
   display: flex;
   padding: 1.5rem;
   max-width: 960px;
@@ -97,9 +99,9 @@ input[type="date"] {
   display: none;
 }
 
-@media screen and (max-width: 960px) {
+@media screen and (max-width: 840px) {
   html {
-   font-size:calc(1vw/2.4 + 12px)
+   font-size:calc(1vw/2.1 + 12px)
   }
 
   body {
