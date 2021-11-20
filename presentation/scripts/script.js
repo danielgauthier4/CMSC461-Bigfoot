@@ -66,8 +66,11 @@ function prepWindow() {
 	// Call updateMap() when calendar date is changed
 	document.getElementById("date").addEventListener("input", updateMap, false);
 	
-    updateMap();
-    drawOnCanvas();
+    var facilities = fetch("data/facilities.json")
+		.then(response => response.json())
+		.then(json => drawOnCanvas(json));
+
+	updateMap();
 }
 
 // Update county colors to reflect active date
@@ -94,7 +97,8 @@ function updateMap() {
 }
 
 // Displays points on map
-function drawOnCanvas() {
+function drawOnCanvas(facilities) {
+	var coords = facilities.map(facility => new Coord(facility.lon, facility.lat));
     var points = coords.map(convertCoords);
     var normalized = normalizePoints(points);
     var transformed = transformPoints(normalized);
@@ -220,100 +224,6 @@ class Prison {
 		this.count = count;
 	}
 }
-
-var coords = [
-    new Coord(-120.1231018, 35.97394934),
-    new Coord(-117.8588801, 35.1532512),
-    new Coord(-120.5167302, 40.40195801),
-    new Coord(-118.5703307, 35.10991489),
-    new Coord(-121.1848441, 37.8947278),
-    new Coord(-117.6823919, 33.98471223),
-    new Coord(-117.636365, 33.94974531),
-    new Coord(-121.9791645, 38.32851019),
-    new Coord(-120.6989005, 35.32457413),
-    new Coord(-117.5759442, 33.92691794),
-    new Coord(-119.549121, 36.06081823),
-    new Coord(-118.2276136, 34.69359649),
-    new Coord(-121.1539037, 38.69444411),
-    new Coord(-122.4903665, 37.94003982),
-    new Coord(-121.9752369, 38.32077652),
-    new Coord(-115.484344, 33.16569337),
-    new Coord(-115.7890555, 32.82339731),
-    new Coord(-120.1527098, 37.09368073),
-    new Coord(-114.9095058, 33.56257951),
-    new Coord(-121.3822324, 36.46964789),
-    new Coord(-121.3306264, 37.74805759),
-    new Coord(-121.1630324, 38.69538339),
-    new Coord(-120.5258579, 40.4034569),
-    new Coord(-114.9260354, 33.56098104),
-    new Coord(-119.3253627, 35.76647437),
-    new Coord(-118.2321, 34.0591),
-    new Coord(-120.9534458, 38.37074335),
-    new Coord(-121.1978212, 37.8911829),
-    new Coord(-119.3098757, 35.78188512),
-    new Coord(-121.1978213, 37.8911829),
-    new Coord(-121.1976947, 37.89852126),
-    new Coord(-117.8774523, 33.7489556),
-    new Coord(-124.1490751, 41.85480851),
-    new Coord(-120.2488996, 36.13147309),
-    new Coord(-121.3279067, 38.2890255),
-    new Coord(-116.9335763, 32.58456487),
-    new Coord(-121.3743944, 36.47885699),
-    new Coord(-120.5365401, 37.89168856),
-    new Coord(-119.5478, 36.05396),
-    new Coord(-120.1554719, 37.10547736),
-    new Coord(-119.4083319, 35.59431189),
-    new Coord(-119.543418, 37.155177),
-    new Coord(-119.543418, 37.155177),
-    new Coord(-119.543418, 37.155177),
-    new Coord(-119.543418, 37.155177),
-    new Coord(-119.543418, 37.155177),
-    new Coord(-121.4974903, 38.58298737),
-    new Coord(-117.1642716, 32.71725211),
-    new Coord(-121.9063, 37.35147),
-    new Coord(-121.8877904, 37.71784065),
-    new Coord(-117.442225, 34.559424),
-    new Coord(-119.225818, 35.6681),
-    new Coord(-115.541, 32.68755),
-    new Coord(-118.23963, 34.05447),
-    new Coord(-119.006075, 35.38009),
-    new Coord(-117.170912, 32.724103),
-    new Coord(-121.7303, 38.66101),
-    new Coord(-121.586736, 39.140676),
-    new Coord(-119.543418, 37.155177),
-    new Coord(-119.543418, 37.155177),
-    new Coord(-119.543418, 37.155177),
-    new Coord(-122.405441, 37.77499),
-    new Coord(-118.24361, 33.97331),
-    new Coord(-120.97872, 35.755566),
-    new Coord(-117.52874, 33.995007),
-    new Coord(-121.49376, 38.584351),
-    new Coord(-117.58974, 34.15554),
-    new Coord(-116.75532, 32.826938),
-    new Coord(-121.2234, 37.906882),
-    new Coord(-122.29612, 37.51445),
-    new Coord(-119.51875, 34.402368),
-    new Coord(-122.16438, 38.069204),
-    new Coord(-120.95632, 37.585454),
-    new Coord(-118.91642, 34.184847),
-    new Coord(-119.45496, 35.95859),
-    new Coord(-119.777127650233, 34.4449050199534),
-    new Coord(-119.543418, 37.155177),
-    new Coord(-119.543418, 37.155177),
-    new Coord(-119.543418, 37.155177),
-    new Coord(-119.543418, 37.155177),
-    new Coord(-120.55909, 37.3830994),
-    new Coord(-121.88797, 37.7159318),
-    new Coord(-120.16359, 40.1440673),
-    new Coord(-120.50559, 34.676188),
-    new Coord(-118.23806, 34.0535217),
-    new Coord(-120.39237, 36.7307653),
-    new Coord(-117.16562, 32.7137119),
-    new Coord(-118.26814, 33.7271772),
-    new Coord(-117.36047, 34.5722033),
-    new Coord(-121.35813, 38.0167812),
-    new Coord(-117.437812, 34.559426),
-]
 
 // Temporary data used in requestDateData()
 var dummydata = `
