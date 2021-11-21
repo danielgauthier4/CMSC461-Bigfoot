@@ -92,7 +92,7 @@ function addMapListeners() {
             // re-draw this facility on top of the rest of the svg
             topFacilityUseElem.setAttribute("href", "#" + element.id);
 
-            tooltip.innerText = element.getAttribute("name");
+            tooltip.innerText = element.getAttribute("tooltipstr");
             tooltip.style.display = "unset";
         }, false);
 
@@ -196,6 +196,13 @@ function updateMap() {
 				// If date doesn't match, zero saturation
 				element.style["fill"] = 'hsl(32,0%,'+ (base * 70 + 20) +'%)';
 			}
+			
+			// Set tooltip string
+			element.setAttribute('tooltipstr', 
+				element.getAttribute('name') +
+				"\nDate: " + entry.date.toString() +
+				"\nCount: " + entry.count.toString()
+				);
 		}
 	})
 }
@@ -220,6 +227,7 @@ function drawFacilities(facilities) {
 		circle.setAttribute("r", 4);
 		circle.setAttribute("name", facility.name);
 		circle.setAttribute("id", facility.id); // Used in updateMap()
+		circle.setAttribute("tooltipstr", facility.name);
 		facilitiesGroup.appendChild(circle);
 	}
 }
