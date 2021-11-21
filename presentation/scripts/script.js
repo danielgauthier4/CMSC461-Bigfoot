@@ -2,7 +2,9 @@ var map;
 var mapDoc;
 var mapBounds;
 var mapTopUse;
+
 var counties;
+var facilityCircles;
 
 var tooltip;
 
@@ -13,7 +15,8 @@ function prepWindow() {
     map = document.getElementById("mapid");
     mapDoc = map.contentDocument;
     mapBounds = map.getBoundingClientRect();
-    mapTopUse = mapDoc.getElementById("top-layer");
+    topCountyUseElem = mapDoc.getElementById("top-county");
+	topFacilityUseElem = mapDoc.getElementById("top-facility")
     counties = Array.from(mapDoc.getElementsByClassName("county"));
 
     tooltip = document.getElementById("counties-tooltip");
@@ -24,42 +27,6 @@ function prepWindow() {
         return;
     }
 	
-	// For each county on the map...
-    counties.forEach((element) => {
-        // whenever the mouse moves on this county, move the tooltip to the mouse's position
-        element.addEventListener("mousemove", (evt) => {
-            tooltip.style.left = evt.clientX + mapBounds.left + 'px';
-            tooltip.style.top = evt.clientY + mapBounds.top + 'px';
-        }, false);
-
-        // when the mouse enters this county, update the tooltip and change the county stroke
-        element.addEventListener("mouseenter", (evt) => {
-            element.style["stroke"] = '#fff';
-            element.style["stroke-width"] = '3';
-
-            // re-draw this county on top of the rest of the svg
-            mapTopUse.setAttribute("href", "#" + element.id);
-
-            tooltip.innerText = element.getAttribute("name") + " County";
-            tooltip.style.display = "unset";
-        }, false);
-
-        // when the mouse leaves this county, unset stroke modifications and re-hide tooltip
-        element.addEventListener("mouseout", (evt) => {
-            element.style["stroke"] = null;
-            element.style["stroke-width"] = null;
-
-            // reset the use element so the county isn't drawn on top anymore
-            mapTopUse.setAttribute("href", null);
-
-            tooltip.style.display = null;
-        }, false);
-		
-		
-		// Set FIPS code
-		element.setAttribute("fips", FIPSMap[element.getAttribute("name")]);
-    });
-	
 	// Resize map bounds whenever page is resized or zoomed
     window.addEventListener("resize", (evt) => { mapBounds = map.getBoundingClientRect(); });
 	
@@ -68,50 +35,139 @@ function prepWindow() {
 	
     var facilities = fetch("data/facilities.json")
 		.then(response => response.json())
-		.then(json => drawOnCanvas(json));
+		.then(json => {
+			drawFacilities(json);
+			
+			facilityCircles = Array.from(mapDoc.getElementsByTagName("circle"));
 
-	updateMap();
+			addMapListeners();
+
+			updateMap();
+		});
+}
+
+function addMapListeners() {
+	// For each county and facility on the map...
+    (counties.concat(facilityCircles)).forEach((element) => {
+        // whenever the mouse moves on this element, move the tooltip to the mouse's position
+        element.addEventListener("mousemove", (evt) => {
+            tooltip.style.left = evt.clientX + mapBounds.left + 'px';
+            tooltip.style.top = evt.clientY + mapBounds.top + 'px';
+        }, false);
+	});
+
+	counties.forEach(element => {
+		// when the mouse enters this county, update the tooltip and change the county stroke
+        element.addEventListener("mouseenter", (evt) => {
+            element.style["stroke"] = '#fff';
+            element.style["stroke-width"] = '1';
+
+            // re-draw this county on top of the rest of the svg
+            topCountyUseElem.setAttribute("href", "#" + element.id);
+
+            tooltip.innerText = element.getAttribute("name") + " County";
+            tooltip.style.display = "unset";
+        }, false);
+
+		// when the mouse leaves this element, unset stroke modifications and re-hide tooltip
+		element.addEventListener("mouseout", (evt) => {
+			element.style["stroke"] = null;
+			element.style["stroke-width"] = null;
+
+			// reset the use element so the element isn't drawn on top anymore
+			topCountyUseElem.setAttribute("href", null);
+
+			tooltip.style.display = null;
+		}, false);
+    });
+
+	facilityCircles.forEach(element => {
+		// when the mouse enters this facility, update the tooltip and change the circle's stroke
+        element.addEventListener("mouseenter", (evt) => {
+            element.style["stroke"] = '#fff';
+            element.style["stroke-width"] = '1';
+
+            // re-draw this facility on top of the rest of the svg
+            topFacilityUseElem.setAttribute("href", "#" + element.id);
+
+            tooltip.innerText = element.getAttribute("name");
+            tooltip.style.display = "unset";
+        }, false);
+
+		// when the mouse leaves this element, unset stroke modifications and re-hide tooltip
+		element.addEventListener("mouseout", (evt) => {
+			element.style["stroke"] = null;
+			element.style["stroke-width"] = null;
+
+			// reset the use element so the element isn't drawn on top anymore
+			topFacilityUseElem.setAttribute("href", null);
+
+			tooltip.style.display = null;
+		}, false);
+    });
 }
 
 // Update county colors to reflect active date
 function updateMap() {
 	var date = document.getElementById("date").value; // String with format "YYYY:MM:DD"
-	var json = requestDateData(date); // Grab data from Apache
+	var json = JSON.parse(requestDateData(date)); // Grab data from Apache
 	
-	var jsondata = readFromJson(json); // Parse data and get map pair (Could just use the json directly though)
-	var countydata = jsondata[0];	// Each entry is a County instance: <date, count>
-	var prisondata = jsondata[1];	// Each entry is a Prison instance: <date, count>
+	var countydata = json["counties"];	// Each entry is a County instance: <date, count>
+	var prisondata = json["prisons"];	// Each entry is a Prison instance: <date, count>
 	
+	var max = -Infinity;
+	var min = Infinity;
+
+	counties.forEach(element => {
+		var FIPScode = element.getAttribute("fips");
+		var entry = countydata[FIPScode];
+
+		if (entry.count > max) max = entry.count;
+		if (entry.count < min) min = entry.count; 
+	});
+
+	var diff = max - min;
+
 	// For each county on map...
     counties.forEach(element => {
 		// Grab <date, count> entry using FIPS code
 		var FIPScode = element.getAttribute("fips");
 		var entry = countydata[FIPScode];
-		
+
+		// normalize color base
+		var base = 1 - ((entry.count - min) / diff);
+
 		// Set color based on count
-		element.style["fill"] = 'hsl(192,80%,'+(entry.count)+'%)';
-		
-		// Set random color
-		//element.style["fill"] = 'hsl(192,80%,'+(Math.random()*70+15)+'%)';
+		element.style["fill"] = 'hsl(192,80%,'+ (base * 70 + 20) +'%)';
     });
+
+	facilityCircles.forEach(element => {
+		element.style["fill"] = 'hsl(32,100%,' + (Math.random() * 70 + 20) + '%)';
+	})
 }
 
 // Displays points on map
-function drawOnCanvas(facilities) {
+function drawFacilities(facilities) {
 	var coords = facilities.map(facility => new Coord(facility.lon, facility.lat));
     var points = coords.map(convertCoords);
     var normalized = normalizePoints(points);
     var transformed = transformPoints(normalized);
 
-    transformed.forEach((point) => {
-        let circle = mapDoc.createElementNS("http://www.w3.org/2000/svg", "circle");
-        circle.setAttribute("cx", point.x);
-        circle.setAttribute("cy", point.y);
-        circle.setAttribute("r", 4);
-        circle.setAttribute("stroke", "brown");
-        circle.setAttribute("fill", "orange");
-        mapDoc.getElementsByTagName("svg")[0].appendChild(circle);
-    });
+	var facilitiesGroup = mapDoc.getElementById("facilities");
+
+	for (let i = 0; i < facilities.length; i++) {
+		let point = transformed[i];
+		let facility = facilities[i];
+
+		let circle = mapDoc.createElementNS("http://www.w3.org/2000/svg", "circle");
+		circle.classList.add("prison");
+		circle.setAttribute("cx", point.x);
+		circle.setAttribute("cy", point.y);
+		circle.setAttribute("r", 4);
+		circle.setAttribute("name", facility.name);
+		circle.setAttribute("id", 'facility-' + facility.id);
+		facilitiesGroup.appendChild(circle);
+	}
 }
 
 // Transforms coordinates from longitude, latitude to x, y
@@ -159,35 +215,6 @@ function requestDateData(date) {
 	return dummydata;
 }
 
-// Returns pair of data from JSON string
-// [counties{}, prisons{}]
-function readFromJson(jsonstring) {
-	var json = JSON.parse(jsonstring);
-	
-	var jsoncounties = json["counties"];
-	var jsonprisons = json["prisons"];
-	var outcounties = {};
-	var outprisons = {};
-	
-	var entry; // Current entry being read
-	
-	// Read counties
-	for (var FIPScode in jsoncounties)
-	{
-		entry = jsoncounties[FIPScode];
-		outcounties[FIPScode] = new County(entry["date"], entry["count"]);
-	}
-	
-	// Read prisons
-	for (var facilityID in jsonprisons)
-	{
-		entry = jsonprisons[facilityID];
-		outprisons[facilityID] = new Prison(entry["date"], entry["count"]);
-	}
-	
-	return [outcounties, outprisons];
-}
-
 // Converts date string to [year, month, day] and returns it
 function dateToTriplet(datestring) {
 	return [
@@ -209,20 +236,6 @@ class Point {
         this.x = x;
         this.y = y;
     }
-}
-
-class County {
-	constructor(date, count) {
-		this.date = date;
-		this.count = count;
-	}
-}
-
-class Prison {
-	constructor(date, count) {
-		this.date = date;
-		this.count = count;
-	}
 }
 
 // Temporary data used in requestDateData()
@@ -311,67 +324,4 @@ var dummydata = `
 		"396": {"date": "1978-11-12", "count": 93}
 	}
 }
-
 `;
-
-var FIPSMap = {
-	"Alameda": "06001",
-	"Alpine": "06003",
-	"Amador": "06005",
-	"Butte": "06007",
-	"Calaveras": "06009",
-	"Colusa": "06011",
-	"Contra Costa": "06013",
-	"Del Norte": "06015",
-	"El Dorado": "06017",
-	"Fresno": "06019",
-	"Glenn": "06021",
-	"Humboldt": "06023",
-	"Imperial": "06025",
-	"Inyo": "06027",
-	"Kern": "06029",
-	"Kings": "06031",
-	"Lake": "06033",
-	"Lassen": "06035",
-	"Los Angeles": "06037",
-	"Madera": "06039",
-	"Marin": "06041",
-	"Mariposa": "06043",
-	"Mendocino": "06045",
-	"Merced": "06047",
-	"Modoc": "06049",
-	"Mono": "06051",
-	"Monterey": "06053",
-	"Napa": "06055",
-	"Nevada": "06057",
-	
-	"Orange": "06059",
-	"Placer": "06061",
-	"Plumas": "06063",
-	"Riverside": "06065",
-	"Sacramento": "06067",
-	"San Benito": "06069",
-	"San Bernardino": "06071",
-	"San Diego": "06073",
-	"San Francisco": "06075",
-	"Joaquin": "06077",
-	"San Luis Obispo": "06079",
-	"San Mateo": "06081",
-	"Santa Barbara": "06083",
-	"Santa Clara": "06085",
-	"Santa Cruz": "06087",
-	"Shasta": "06089",
-	"Sierra": "06091",
-	"Siskiyou": "06093",
-	"Solano": "06095",
-	"Sonoma": "06097",
-	"Stanislaus": "06099",
-	"Sutter": "06101",
-	"Tehama": "06103",
-	"Trinity": "06105",
-	"Tulare": "06107",
-	"Tuolumne": "06109",
-	"Ventura": "06111",
-	"Yolo": "06113",
-	"Yuba": "06115",
-}
