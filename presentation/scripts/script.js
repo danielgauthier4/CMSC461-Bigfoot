@@ -65,7 +65,9 @@ function addMapListeners() {
             // re-draw this county on top of the rest of the svg
             topCountyUseElem.setAttribute("href", "#" + element.id);
 
-            tooltip.innerText = element.getAttribute("name") + " County";
+			var entry = JSON.parse(element.getAttribute("coviddata"));
+
+            tooltip.innerText = element.getAttribute("name") + " County" + "\nDate: " + entry.date + "\nCount: " + entry.count;
             tooltip.style.display = "unset";
         }, false);
 
@@ -110,6 +112,7 @@ function addMapListeners() {
 // Update county colors to reflect active date
 function updateMap() {
 	var date = document.getElementById("date").value; // String with format "YYYY:MM:DD"
+	var isoDate = date.replace(":", "-");
 	var json = JSON.parse(requestDateData(date)); // Grab data from Apache
 	
 	var countydata = json["counties"];	// Each entry is a County instance: <date, count>
@@ -128,6 +131,7 @@ function updateMap() {
 
 	var diff = max - min;
 
+
 	// For each county on map...
     counties.forEach(element => {
 		var FIPScode = element.getAttribute("fips");
@@ -140,7 +144,15 @@ function updateMap() {
 			var base = 1 - ((entry.count - min) / diff);
 
 			// Set color based on count
-			element.style["fill"] = 'hsl(192,80%,'+ (base * 70 + 20) +'%)';
+			if (entry.date == isoDate) {
+				// If matching date, full saturation
+				element.style["fill"] = 'hsl(192,100%,'+ (base * 70 + 20) +'%)';
+			} else {
+				// If date doesn't match, zero saturation
+				element.style["fill"] = 'hsl(192,0%,'+ (base * 70 + 20) +'%)';
+			}
+
+			element.setAttribute("coviddata", JSON.stringify(entry));
 		}
     });
 	
@@ -154,9 +166,15 @@ function updateMap() {
 			
 			// normalize color base
 			var base = 1 - ((entry.count - min) / diff);
-			
+
 			// Set color based on count
-			element.style["fill"] = 'hsl(32,100%,' + (base * 70 + 20) + '%)';
+			if (entry.date == isoDate) {
+				// If matching date, full saturation
+				element.style["fill"] = 'hsl(32,100%,'+ (base * 70 + 20) +'%)';
+			} else {
+				// If date doesn't match, zero saturation
+				element.style["fill"] = 'hsl(32,0%,'+ (base * 70 + 20) +'%)';
+			}
 		}
 	})
 }
