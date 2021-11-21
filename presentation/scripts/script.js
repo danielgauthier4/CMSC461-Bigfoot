@@ -118,19 +118,21 @@ function updateMap() {
 	var countydata = json["counties"];	// Each entry is a County instance: <date, count>
 	var prisondata = json["prisons"];	// Each entry is a Prison instance: <date, count>
 	
-	var max = -Infinity;
-	var min = Infinity;
+	var countyMax = -Infinity;
+	var countyMin = Infinity;
 
 	counties.forEach(element => {
 		var FIPScode = element.getAttribute("fips");
 		var entry = countydata[FIPScode];
 
-		if (entry.count > max) max = entry.count;
-		if (entry.count < min) min = entry.count; 
+		if (entry.count > countyMax) countyMax = entry.count;
+		if (entry.count < countyMin) countyMin = entry.count; 
 	});
 
-	var diff = max - min;
+	var countyDiff = countyMax - countyMin;
 
+	document.getElementById("county-colorscale-min").innerText = countyMin;
+	document.getElementById("county-colorscale-max").innerText = countyMax;
 
 	// For each county on map...
     counties.forEach(element => {
@@ -141,7 +143,7 @@ function updateMap() {
 			var entry = countydata[FIPScode]; // entry = <date, count>
 
 			// normalize color base
-			var base = 1 - ((entry.count - min) / diff);
+			var base = 1 - ((entry.count - countyMin) / countyDiff);
 
 			// Set color based on count
 			if (entry.date == isoDate) {
@@ -155,7 +157,24 @@ function updateMap() {
 			element.setAttribute("coviddata", JSON.stringify(entry));
 		}
     });
-	
+
+	// calculate min and max for prisons
+	var prisonMax = -Infinity;
+	var prisonMin = Infinity;
+
+	facilityCircles.forEach(element => {
+		var id = element.getAttribute("id");
+		var entry = prisondata[id];
+
+		if (entry.count > prisonMax) prisonMax = entry.count;
+		if (entry.count < prisonMin) prisonMin = entry.count; 
+	});
+
+	var prisonDiff = prisonMax - prisonMin;
+
+	document.getElementById("prison-colorscale-min").innerText = prisonMin;
+	document.getElementById("prison-colorscale-max").innerText = prisonMax;
+
 	// For each facility circle on map...
 	facilityCircles.forEach(element => {
 		var id = element.getAttribute("id");
@@ -164,8 +183,10 @@ function updateMap() {
 		if (id in prisondata) {
 			var entry = prisondata[id]; // entry = <date, count>
 			
+			console.log(entry);
+			
 			// normalize color base
-			var base = 1 - ((entry.count - min) / diff);
+			var base = 1 - ((entry.count - prisonMin) / prisonDiff);
 
 			// Set color based on count
 			if (entry.date == isoDate) {
@@ -279,14 +300,14 @@ var dummydata = `
 		"06081": {"date": "2009-03-05", "count": 55},
 		"06005": {"date": "1989-10-11", "count": 44},
 		"06027": {"date": "2007-07-20", "count": 18},
-		"06033": {"date": "1990-02-24", "count": 37},
-		"06067": {"date": "1950-07-29", "count": 84},
-		"06037": {"date": "2009-04-24", "count": 40},
-		"06061": {"date": "1962-08-18", "count": 85},
-		"06019": {"date": "2017-07-02", "count": 79},
-		"06099": {"date": "2015-07-29", "count": 78},
-		"06075": {"date": "1989-11-29", "count": 62},
-		"06031": {"date": "1999-01-18", "count": 3},
+		"06033": {"date": "2020-06-09", "count": 37},
+		"06067": {"date": "2020-06-09", "count": 84},
+		"06037": {"date": "2020-06-09", "count": 40},
+		"06061": {"date": "2020-06-09", "count": 85},
+		"06019": {"date": "2020-06-09", "count": 79},
+		"06099": {"date": "2020-06-09", "count": 78},
+		"06075": {"date": "2020-06-09", "count": 62},
+		"06031": {"date": "2020-06-09", "count": 3},
 		"06017": {"date": "1975-08-23", "count": 83},
 		"06007": {"date": "1993-05-02", "count": 78},
 		"06023": {"date": "1970-08-12", "count": 69},
@@ -314,16 +335,16 @@ var dummydata = `
 		"06083": {"date": "2017-10-04", "count": 16},
 		"06039": {"date": "1984-07-11", "count": 83},
 		"06043": {"date": "1950-04-19", "count": 43},
-		"06041": {"date": "2002-07-01", "count": 72},
-		"06065": {"date": "1998-05-27", "count": 42},
-		"06009": {"date": "1954-02-04", "count": 75},
-		"06055": {"date": "1975-04-06", "count": 86},
-		"06049": {"date": "2018-09-30", "count": 16},
+		"06041": {"date": "2020-06-09", "count": 72},
+		"06065": {"date": "2020-06-09", "count": 42},
+		"06009": {"date": "2020-06-09", "count": 75},
+		"06055": {"date": "2020-06-09", "count": 86},
+		"06049": {"date": "2020-06-09", "count": 16},
 		"06115": {"date": "1996-06-10", "count": 82},
-		"06101": {"date": "2007-07-20", "count": 55},
-		"06095": {"date": "1989-09-29", "count": 54},
-		"06045": {"date": "2000-11-29", "count": 27},
-		"06013": {"date": "2016-10-11", "count": 51},
+		"06101": {"date": "2020-06-09", "count": 55},
+		"06095": {"date": "2020-06-09", "count": 54},
+		"06045": {"date": "2020-06-09", "count": 27},
+		"06013": {"date": "2020-06-09", "count": 51},
 		"06093": {"date": "1990-09-30", "count": 86},
 		"06025": {"date": "1985-04-24", "count": 31},
 		"06053": {"date": "1975-08-26", "count": 63},
@@ -338,14 +359,14 @@ var dummydata = `
 		"83": {"date": "2007-01-06", "count": 91},
 		"88": {"date": "1987-04-18", "count": 70},
 		"89": {"date": "2006-02-23", "count": 41},
-		"90": {"date": "1997-03-18", "count": 38},
-		"91": {"date": "1984-01-28", "count": 98},
-		"92": {"date": "2010-01-06", "count": 31},
-		"93": {"date": "1985-10-16", "count": 34},
-		"94": {"date": "2012-04-27", "count": 12},
-		"95": {"date": "2001-05-30", "count": 54},
-		"96": {"date": "2003-02-20", "count": 18},
-		"97": {"date": "1955-05-18", "count": 6},
+		"90": {"date": "2020-06-09", "count": 38},
+		"91": {"date": "2020-06-09", "count": 98},
+		"92": {"date": "2020-06-09", "count": 31},
+		"93": {"date": "2020-06-09", "count": 34},
+		"94": {"date": "2020-06-09", "count": 12},
+		"95": {"date": "2020-06-09", "count": 54},
+		"96": {"date": "2020-06-09", "count": 18},
+		"97": {"date": "2020-06-09", "count": 6},
 		"98": {"date": "1955-11-26", "count": 94},
 		"99": {"date": "1999-06-25", "count": 21},
 		"100": {"date": "1956-08-30", "count": 42},
@@ -356,10 +377,10 @@ var dummydata = `
 		"113": {"date": "1966-10-22", "count": 29},
 		"115": {"date": "2007-08-26", "count": 80},
 		"116": {"date": "1982-04-22", "count": 23},
-		"120": {"date": "1969-11-06", "count": 7},
-		"128": {"date": "1952-08-13", "count": 85},
-		"129": {"date": "1956-11-06", "count": 74},
-		"131": {"date": "2013-06-01", "count": 74},
+		"120": {"date": "2020-06-09", "count": 7},
+		"128": {"date": "2020-06-09", "count": 85},
+		"129": {"date": "2020-06-09", "count": 74},
+		"131": {"date": "2020-06-09", "count": 74},
 		"135": {"date": "1984-11-30", "count": 19},
 		"139": {"date": "1950-03-30", "count": 77},
 		"140": {"date": "1996-10-26", "count": 76},

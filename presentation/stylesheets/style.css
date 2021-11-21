@@ -62,6 +62,42 @@ body {
   background: #eee;
 }
 
+#colorscales {
+  position: absolute;
+  width: 30%;
+  top: 2rem;
+  right: 3rem;
+}
+
+.colorscale {
+  padding-bottom: 2rem;
+}
+
+.colorscale > .gradient {
+  border-radius: .25rem;
+  height: 1rem;
+}
+
+#county-colorscale > .gradient {
+  background: linear-gradient(90deg, rgba(204,245,255,1) 0%, rgba(26,209,255,1) 50%, rgba(0,82,102,1) 100%);
+}
+
+#prison-colorscale > .gradient {
+  background: linear-gradient(90deg, rgba(255,231,204,1) 0%, rgba(255,148,26,1) 50%, rgba(102,54,0,1) 100%);
+}
+
+.colorscale-min {
+  left: 0;
+  position: absolute;
+  font-size: 0.8rem;
+}
+
+.colorscale-max {
+  right: 0;
+  position: absolute;
+  font-size: 0.8rem;
+}
+
 .controls {
   padding: .25rem 1rem;
   border-radius: .5rem;
