@@ -10,7 +10,6 @@
 import sys
 import random
 
-
 FIPSMap = {
 	"Alameda": "06001",
 	"Alpine": "06003",
@@ -73,7 +72,13 @@ FIPSMap = {
 	"Yuba": "06115",
 }
 
-facilityIDrange = (0, 2736);
+facilityIDs = [
+    83, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101,
+    102, 111, 112, 113, 115, 116, 120, 128, 129, 131, 135, 139, 140,
+    141, 142, 143, 144, 145, 147, 148, 150, 152, 158, 161, 164, 171,
+    1724, 1725, 1726, 1727, 1879, 2178, 2340, 2361, 2381, 2390, 2392,
+    2402, 2428, 2439, 2445,
+]
 
 def RandomDateAndCount():
     out = "";
@@ -92,7 +97,7 @@ def MakeDates():
     out = '{\n';
     
     countycount = len(FIPSMap);
-    prisoncount = 20;
+    prisoncount = len(facilityIDs);
     
     # Counties ------------------------------------
     out += '\t"counties": {\n'
@@ -109,11 +114,7 @@ def MakeDates():
     
     # Prisons ------------------------------------
     out += '\t"prisons": {\n'
-    keys = [];
-    while len(keys) < prisoncount:
-        k = random.randrange(facilityIDrange[0], facilityIDrange[1]);
-        if k not in keys:
-            keys.append(k);
+    keys = facilityIDs[:];
             
     for i, k in enumerate(keys):
         out += '\t\t"' + str(k) + '": ' + RandomDateAndCount();
