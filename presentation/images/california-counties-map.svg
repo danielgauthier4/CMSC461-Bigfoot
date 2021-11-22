@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 424 450.3">
-  <style>.county{stroke:hsl(192,80%,15%);stroke-width:.4; fill:transparent;}
-    .prison{stroke:hsl(32,80%,10%);stroke-width:.4}
-    svg{filter: drop-shadow(1px 1px 0 #000) drop-shadow(-1px 1px 0 #000) drop-shadow(1px -1px 0 #000) drop-shadow(-1px -1px 0 #000);}
+  <style>.county, .prison{stroke:black;stroke-width:.4;fill:#000}
+    .missing{opacity:.05;pointer-events:none;}
+    @media (prefers-color-scheme: dark){.county, .prison{fill: #fff}}
+    .hovered:not(.missing){stroke:#fff;stroke-width:1}
+    svg{filter: drop-shadow(1px 1px 2px rgba(0, 0, 0, .64)) }
     use{pointer-events:none;}</style>
   <g id="counties">
     <path id="modoc-county" class="county" d="M137.4 22.5h11.5l1 .1h22.9l3 .1h5.7l2.5-.1h3v37.2h-49.6V44.6l-.1-4.8v-7.1h-.3v-8h.4v-2.2Z" name="Modoc" fips="06049" />

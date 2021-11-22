@@ -47,71 +47,37 @@ function prepWindow() {
 }
 
 function addMapListeners() {
-	// For each county and facility on the map...
-    (counties.concat(facilityCircles)).forEach((element) => {
-        // whenever the mouse moves on this element, move the tooltip to the mouse's position
-        element.addEventListener("mousemove", (evt) => {
-            tooltip.style.left = evt.clientX + mapBounds.left + 'px';
-            tooltip.style.top = evt.clientY + mapBounds.top + 'px';
-        }, false);
-	});
+	function addListenersTo(elements, topUseElem) {
+		elements.forEach(element => {
+			// whenever the mouse moves on this element, move the tooltip to the mouse's position
+			element.addEventListener("mousemove", (evt) => {
+				tooltip.style.left = evt.clientX + mapBounds.left + 'px';
+				tooltip.style.top = evt.clientY + mapBounds.top + 'px';
+			}, false);
 
-	counties.forEach(element => {
-		// when the mouse enters this county, update the tooltip and change the county stroke
-        element.addEventListener("mouseenter", (evt) => {
-            element.style["stroke"] = '#fff';
-            element.style["stroke-width"] = '1';
+			// when the mouse enters this county, update the tooltip and change the county stroke
+			element.addEventListener("mouseenter", (evt) => {
+				element.classList.add("hovered");
+				// re-draw this county on top of the rest of the svg
+				topUseElem.setAttribute("href", "#" + element.id);
+				
+				tooltip.innerText = element.getAttribute("tooltipstr");
+				tooltip.style.display = "unset";
+			}, false);
+	
+			// when the mouse leaves this element, unset stroke modifications and re-hide tooltip
+			element.addEventListener("mouseout", (evt) => {
+				element.classList.remove("hovered");
+				// reset the use element so the element isn't drawn on top anymore
+				topUseElem.setAttribute("href", null);
+				
+				tooltip.style.display = null;
+			}, false);
+		});
+	}
 
-            // re-draw this county on top of the rest of the svg
-            topCountyUseElem.setAttribute("href", "#" + element.id);
-			
-			if ( element.getAttribute("coviddata") ) {
-				var entry = JSON.parse(element.getAttribute("coviddata"));
-				tooltip.innerText = element.getAttribute("name") + " County" + "\nDate: " + entry.date + "\nCount: " + entry.count;
-			}
-			else {
-				tooltip.innerText = '';
-			}
-			
-            tooltip.style.display = "unset";
-        }, false);
-
-		// when the mouse leaves this element, unset stroke modifications and re-hide tooltip
-		element.addEventListener("mouseout", (evt) => {
-			element.style["stroke"] = null;
-			element.style["stroke-width"] = null;
-
-			// reset the use element so the element isn't drawn on top anymore
-			topCountyUseElem.setAttribute("href", null);
-
-			tooltip.style.display = null;
-		}, false);
-    });
-
-	facilityCircles.forEach(element => {
-		// when the mouse enters this facility, update the tooltip and change the circle's stroke
-        element.addEventListener("mouseenter", (evt) => {
-            element.style["stroke"] = '#fff';
-            element.style["stroke-width"] = '1';
-
-            // re-draw this facility on top of the rest of the svg
-            topFacilityUseElem.setAttribute("href", "#" + element.id);
-
-            tooltip.innerText = element.getAttribute("tooltipstr");
-            tooltip.style.display = "unset";
-        }, false);
-
-		// when the mouse leaves this element, unset stroke modifications and re-hide tooltip
-		element.addEventListener("mouseout", (evt) => {
-			element.style["stroke"] = null;
-			element.style["stroke-width"] = null;
-
-			// reset the use element so the element isn't drawn on top anymore
-			topFacilityUseElem.setAttribute("href", null);
-
-			tooltip.style.display = null;
-		}, false);
-    });
+	addListenersTo(counties, topCountyUseElem);
+	addListenersTo(facilityCircles, topFacilityUseElem);
 }
 
 // Update county colors to reflect active date
@@ -122,7 +88,7 @@ function updateMap() {
 	
 	var countydata = json["counties"];	// Each entry is a County instance: <date, count>
 	var prisondata = json["prisons"];	// Each entry is a Prison instance: <date, count>
-	
+
 	var countyMax = -Infinity;
 	var countyMin = Infinity;
 	
@@ -149,6 +115,8 @@ function updateMap() {
 		
 		// Check if entry for FIPScode exists
 		if (FIPScode in countydata) {
+			element.classList.remove("missing");
+
 			var entry = countydata[FIPScode]; // entry = <date, count>
 
 			// normalize color base
@@ -163,14 +131,17 @@ function updateMap() {
 				element.style["fill"] = 'hsl(192,0%,'+ (base * 70 + 20) +'%)';
 			}
 
-			element.setAttribute("coviddata", JSON.stringify(entry));
+			// Set tooltip string
+			element.setAttribute('tooltipstr', 
+				element.getAttribute('name') + "County" +
+				"\nDate: " + entry.date.toString() +
+				"\nCount: " + entry.count.toString()
+				);
 		}
 		// Blank out county
 		else {
-			element.style["stroke"] = null;
-			element.style["stroke-width"] = null;
-			element.style["fill"] = null;
-			element.setAttribute("coviddata", null);
+			element.classList.add("missing");
+			element.removeAttribute("tooltipstr");
 		}
     });
 
@@ -201,9 +172,9 @@ function updateMap() {
 		
 		// Check if entry for prison id exists
 		if (id in prisondata) {
-			var entry = prisondata[id]; // entry = <date, count>
-			
-			console.log(entry);
+			element.classList.remove("missing");
+
+			var entry = prisondata[id]; // entry = <date, count>			
 			
 			// normalize color base
 			var base = 1 - ((entry.count - prisonMin) / prisonDiff);
@@ -226,11 +197,7 @@ function updateMap() {
 		}
 		// Blank out county
 		else {
-			element.style["stroke"] = null;
-			element.style["stroke-width"] = null;
-			element.style["fill"] = null;
-			
-			//element.setAttribute('tooltipstr', element.getAttribute('name') + '\nNo data for date');
+			element.classList.add("missing");
 			element.setAttribute('tooltipstr', '');
 		}
 	})
@@ -400,7 +367,7 @@ var dummydata = `
 		"06011": {"date": "2020-10-18", "count": 97},
 		"06093": {"date": "2020-03-11", "count": 0},
 		"06095": {"date": "2020-10-27", "count": 13},
-		"06081": {"date": "2020-06-23", "count": 0},
+		"06081": {"date": "2020-06-09", "count": 0},
 		"06023": {"date": "2020-07-27", "count": 5},
 		"06037": {"date": "2020-09-12", "count": 70},
 		"06013": {"date": "2020-03-02", "count": 53},
