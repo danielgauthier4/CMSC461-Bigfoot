@@ -84,7 +84,7 @@ def RandomDateAndCount():
     out = "";
     
     out += '{"date": "';
-    out += str(random.randrange(1950, 2021)).rjust(4, '0') + '-'
+    out += str(random.randrange(2020, 2021)).rjust(4, '0') + '-'
     out += str(random.randrange(1, 12)).rjust(2, '0') + '-'
     out += str(random.randrange(1, 31)).rjust(2, '0') + '"'
     
