@@ -76,7 +76,7 @@ FIELDS TERMINATED BY ','
 ENCLOSED BY '"'
 LINES TERMINATED BY '\n'
 IGNORE 1 ROWS
-(date,county,state,fips,cases,deaths);
+(id,date,county,state,fips,cases,deaths);
 
 
 LOAD DATA LOCAL INFILE  
@@ -86,7 +86,7 @@ FIELDS TERMINATED BY ','
 ENCLOSED BY '"'
 LINES TERMINATED BY '\n'
 IGNORE 1 ROWS
-(date, measure, count, reporting, missing);
+(id,date, measure, count, reporting, missing);
 
 
 LOAD DATA LOCAL INFILE  
