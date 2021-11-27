@@ -140,6 +140,7 @@ function updateMap() {
 		}
 		// Blank out county
 		else {
+			element.style["fill"] = null;
 			element.classList.add("missing");
 			element.removeAttribute("tooltipstr");
 		}
@@ -197,6 +198,7 @@ function updateMap() {
 		}
 		// Blank out county
 		else {
+			element.style["fill"] = null;
 			element.classList.add("missing");
 			element.setAttribute('tooltipstr', '');
 		}
