@@ -96,8 +96,8 @@ FIELDS TERMINATED BY ','
 ENCLOSED BY '"'
 LINES TERMINATED BY '\n'
 IGNORE 1 ROWS
-(Date,
-State,
+(id, date,
+state,
 `residents.confirmed`,
 `staff.confirmed`,
 `residents.deaths`,
@@ -121,4 +121,5 @@ FIELDS TERMINATED BY ','
 ENCLOSED BY '"'
 LINES TERMINATED BY '\n'
 IGNORE 1 ROWS
-(State, `Web.Group`, Measure, Val, Rate, Date);
+(id, state, `web.group` , measure, val, rate, date);
+/*(id, state, @dummy , measure, val, rate, date);*/
