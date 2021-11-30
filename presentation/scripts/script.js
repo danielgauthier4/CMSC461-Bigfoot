@@ -106,8 +106,8 @@ function updateMap() {
 	
 	var countyDiff = countyMax - countyMin;
 
-	document.getElementById("county-colorscale-min").innerText = countyMin;
-	document.getElementById("county-colorscale-max").innerText = countyMax;
+	document.getElementById("county-colorscale-min").innerText = countyMin + " cases";
+	document.getElementById("county-colorscale-max").innerText = countyMax + " cases";
 	
 	// For each county on map...
     counties.forEach(element => {
@@ -135,7 +135,7 @@ function updateMap() {
 			element.setAttribute('tooltipstr', 
 				element.getAttribute('name') + " County" +
 				"\nDate: " + entry.date.toString() +
-				"\nCount: " + entry.count.toString()
+				"\nCases: " + entry.count.toString()
 				);
 		}
 		// Blank out county
@@ -164,8 +164,8 @@ function updateMap() {
 
 	var prisonDiff = prisonMax - prisonMin;
 
-	document.getElementById("prison-colorscale-min").innerText = prisonMin;
-	document.getElementById("prison-colorscale-max").innerText = prisonMax;
+	document.getElementById("prison-colorscale-min").innerText = prisonMin + " cases";
+	document.getElementById("prison-colorscale-max").innerText = prisonMax + " cases";
 
 	// For each facility circle on map...
 	facilityCircles.forEach(element => {
