@@ -127,6 +127,7 @@ input[type="date"] {
 
 #counties-tooltip {
   position: fixed;
+  z-index: 20;
   transform: translate(-25%, calc(-100% - 1rem));
   background: white;
   opacity: .85;
