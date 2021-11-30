@@ -133,7 +133,7 @@ function updateMap() {
 
 			// Set tooltip string
 			element.setAttribute('tooltipstr', 
-				element.getAttribute('name') + "County" +
+				element.getAttribute('name') + " County" +
 				"\nDate: " + entry.date.toString() +
 				"\nCount: " + entry.count.toString()
 				);
