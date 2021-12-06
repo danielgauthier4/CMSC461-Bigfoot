@@ -41,6 +41,7 @@ CREATE TABLE `covid_data`.`state_jurisdiction_counts` (
   id  int(3) unsigned not null AUTO_INCREMENT,
   `state` VARCHAR(45) NOT NULL DEFAULT '0',
   `webGroup` VARCHAR(45) NOT NULL DEFAULT '0',
+>>>>>>> main
   /*`measure` VARCHAR(45) NOT NULL DEFAULT '0',
   `val` INT NOT NULL DEFAULT 0,
   `rate` VARCHAR(45) NOT NULL DEFAULT '0',*/
@@ -54,6 +55,7 @@ CREATE TABLE `covid_data`.`state_counts` (
   `state` VARCHAR(45) NOT NULL DEFAULT '0',
   `residentsConfirmed` VARCHAR(45) NOT NULL DEFAULT '0',
   `staffConfirmed` VARCHAR(45) NOT NULL DEFAULT '0',
+>>>>>>> main
   /*`residents.deaths` VARCHAR(45) NOT NULL DEFAULT '0',
   `staff.deaths` VARCHAR(45) NOT NULL DEFAULT '0',
   `residents.tadmin` VARCHAR(45) NOT NULL DEFAULT '0',
@@ -75,6 +77,7 @@ CREATE TABLE `covid_data`.`facility_counts`(
   `residentsConfirmed` VARCHAR(45) NOT NULL DEFAULT '0',
   `staffConfirmed` VARCHAR(45) NOT NULL DEFAULT '0',
   `webGroup` VARCHAR(45) NOT NULL DEFAULT '0',
+>>>>>>> main
   `latitude` VARCHAR(45) NOT NULL DEFAULT '0',
   `longitude` VARCHAR(45) NOT NULL DEFAULT '0',
   `fips` VARCHAR(45) NOT NULL DEFAULT '0',
@@ -104,6 +107,7 @@ name,date,
  @dummy, `residentConfirmed`,`staffConfirmed`,
 @dummy, @dummy, @dummy, @dummy, @dummy, @dummy, @dummy, @dummy,
 @dummy, @dummy, @dummy, @dummy, @dummy, @dummy, `webGroup`,
+>>>>>>> main
 @dummy,@dummy,@dummy,@dummy, `latitude`,`longtitude`, `fips`, @dummy);
 
 LOAD DATA LOCAL INFILE  
@@ -135,6 +139,7 @@ IGNORE 1 ROWS
 (date,
 state,
 `residentsConfirmed`,
+>>>>>>> main
 @dummy,
 @dummy,
 @dummy,
@@ -159,6 +164,7 @@ LINES TERMINATED BY '\n'
 IGNORE 1 ROWS
 /*( state, `web.group` , measure, val, rate, date);*/
 (state, `webGroup` , @dummy, @dummy, @dummy, date);
+>>>>>>> main
 
 LOAD DATA LOCAL INFILE  
 '../resources/csv/historical_facility_counts.csv'
