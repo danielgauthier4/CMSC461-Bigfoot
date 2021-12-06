@@ -22,18 +22,18 @@ CREATE TABLE `covid_data`.`nyt_counts` (
   `county` VARCHAR(45) NOT NULL DEFAULT '0',
   `state` VARCHAR(45) NOT NULL DEFAULT '0',
   `fips` VARCHAR(45) NOT NULL DEFAULT '0',
-  `cases` INT NOT NULL DEFAULT 0,
-  `deaths` INT NOT NULL DEFAULT 0,
+  /* `deaths` INT NOT NULL DEFAULT 0,*/
+  `cases` INT NOT NULL DEFAULT 0, 
   primary key (id));
   
 
 CREATE TABLE `covid_data`.`national_counts` (
   id  int(2) unsigned not null AUTO_INCREMENT,
   `date` DATETIME NULL,
-  `measure` VARCHAR(45) NOT NULL DEFAULT '0',
+  /*`measure` VARCHAR(45) NOT NULL DEFAULT '0',
   `count` INT NOT NULL DEFAULT 0,
   `reporting` INT NOT NULL DEFAULT 0,
-  `missing` VARCHAR(1024) NOT NULL DEFAULT '0',
+  `missing` VARCHAR(1024) NOT NULL DEFAULT '0',*/
   primary key (id));
 
 
@@ -41,9 +41,9 @@ CREATE TABLE `covid_data`.`state_jurisdiction_counts` (
   id  int(3) unsigned not null AUTO_INCREMENT,
   `state` VARCHAR(45) NOT NULL DEFAULT '0',
   `web.group` VARCHAR(45) NOT NULL DEFAULT '0',
-  `measure` VARCHAR(45) NOT NULL DEFAULT '0',
+  /*`measure` VARCHAR(45) NOT NULL DEFAULT '0',
   `val` INT NOT NULL DEFAULT 0,
-  `rate` VARCHAR(45) NOT NULL DEFAULT '0',
+  `rate` VARCHAR(45) NOT NULL DEFAULT '0',*/
   `date` DATETIME NULL,
   primary key (id));
   
@@ -54,7 +54,7 @@ CREATE TABLE `covid_data`.`state_counts` (
   `state` VARCHAR(45) NOT NULL DEFAULT '0',
   `residents.confirmed` VARCHAR(45) NOT NULL DEFAULT '0',
   `staff.confirmed` VARCHAR(45) NOT NULL DEFAULT '0',
-  `residents.deaths` VARCHAR(45) NOT NULL DEFAULT '0',
+  /*`residents.deaths` VARCHAR(45) NOT NULL DEFAULT '0',
   `staff.deaths` VARCHAR(45) NOT NULL DEFAULT '0',
   `residents.tadmin` VARCHAR(45) NOT NULL DEFAULT '0',
   `residents.tested` VARCHAR(45) NOT NULL DEFAULT '0',
@@ -65,9 +65,46 @@ CREATE TABLE `covid_data`.`state_counts` (
   `residents.completed` VARCHAR(45) NOT NULL DEFAULT '0',
   `staff.completed` VARCHAR(45) NOT NULL DEFAULT '0',
   `residents.vadmin` VARCHAR(45) NOT NULL DEFAULT '0',
-  `staff.vadmin` VARCHAR(45) NOT NULL DEFAULT '0',
+  `staff.vadmin` VARCHAR(45) NOT NULL DEFAULT '0',*/
   primary key (id));
   
+CREATE TABLE `covid_data`.`facility_counts`(
+  id int(5) unsigned not null AUTO_INCREMENT,
+  `state` VARCHAR(45) NOT NULL DEFAULT '0',
+  `date` DATETIME NULL,
+  `residents.confirmed` VARCHAR(45) NOT NULL DEFAULT '0',
+  `staff.confirmed` VARCHAR(45) NOT NULL DEFAULT '0',
+  `web.group` VARCHAR(45) NOT NULL DEFAULT '0',
+  `latitude` VARCHAR(45) NOT NULL DEFAULT '0',
+  `longitude` VARCHAR(45) NOT NULL DEFAULT '0',
+  `fips` VARCHAR(45) NOT NULL DEFAULT '0',
+  primary key (id));
+
+CREATE TABLE `covid_data`.`CA_facility` (
+  id  int(6) unsigned not null AUTO_INCREMENT,
+  `name` VARCHAR(45) NOT NULL DEFAULT '0', 
+  `date` DATETIME NULL,
+  `resident.confirmed` VARCHAR(45) NOT NULL DEFAULT '0',
+  `staff.confirmed` VARCHAR(45) NOT NULL DEFAULT '0',
+  `web.group` VARCHAR(45) NOT NULL DEFAULT '0',
+  `latitude` VARCHAR(45) NOT NULL DEFAULT '0',
+  `longtitude` VARCHAR(45) NOT NULL DEFAULT '0',
+  `fips` VARCHAR(45) NOT NULL DEFAULT '0',
+  primary key (id));
+
+LOAD DATA LOCAL INFILE  
+'../resources/csv/cali_historical_facility_counts.csv'
+INTO TABLE CA_facility
+FIELDS TERMINATED BY ',' 
+ENCLOSED BY '"'
+LINES TERMINATED BY '\n'
+IGNORE 1 ROWS
+(id, @dummy, @dummy,
+name,date,
+ @dummy, `resident.confirmed`,`staff.confirmed`,
+@dummy, @dummy, @dummy, @dummy, @dummy, @dummy, @dummy, @dummy,
+@dummy, @dummy, @dummy, @dummy, @dummy, @dummy, `web.group`,
+@dummy,@dummy,@dummy,@dummy, `latitude`,`longtitude`, `fips`, @dummy);
 
 LOAD DATA LOCAL INFILE  
 '../resources/csv/nytimes_counts.csv'
@@ -76,8 +113,7 @@ FIELDS TERMINATED BY ','
 ENCLOSED BY '"'
 LINES TERMINATED BY '\n'
 IGNORE 1 ROWS
-(id,date,county,state,fips,cases,deaths);
-
+(id,date,county,state,fips,cases,@dummy);
 
 LOAD DATA LOCAL INFILE  
 '../resources/csv/historical_national_counts.csv'
@@ -86,7 +122,7 @@ FIELDS TERMINATED BY ','
 ENCLOSED BY '"'
 LINES TERMINATED BY '\n'
 IGNORE 1 ROWS
-(id,date, measure, count, reporting, missing);
+(id,date, @dummy, @dummy, @dummy, @dummy);
 
 
 LOAD DATA LOCAL INFILE  
@@ -96,22 +132,22 @@ FIELDS TERMINATED BY ','
 ENCLOSED BY '"'
 LINES TERMINATED BY '\n'
 IGNORE 1 ROWS
-(Date,
-State,
+(date,
+state,
 `residents.confirmed`,
-`staff.confirmed`,
-`residents.deaths`,
-`staff.deaths`,
-`residents.tadmin`,
-`residents.tested`,
-`residents.active`,
-`staff.active`,
-`staff.initiated`,
-`residents.initiated`,
-`residents.completed`,
-`staff.completed`,
-`residents.vadmin`,
-`staff.vadmin`);
+@dummy,
+@dummy,
+@dummy,
+@dummy,
+@dummy,
+@dummy,
+@dummy,
+@dummy,
+@dummy,
+@dummy,
+@dummy,
+@dummy,
+@dummy);
 
 
 LOAD DATA LOCAL INFILE  
@@ -121,4 +157,19 @@ FIELDS TERMINATED BY ','
 ENCLOSED BY '"'
 LINES TERMINATED BY '\n'
 IGNORE 1 ROWS
-(State, `Web.Group`, Measure, Val, Rate, Date);
+/*( state, `web.group` , measure, val, rate, date);*/
+(state, `web.group` , @dummy, @dummy, @dummy, date);
+
+LOAD DATA LOCAL INFILE  
+'../resources/csv/historical_facility_counts.csv'
+INTO TABLE facility_counts
+FIELDS TERMINATED BY ',' 
+ENCLOSED BY '"'
+LINES TERMINATED BY '\n'
+IGNORE 1 ROWS
+(@dummy, @dummy, 
+state, @dummy, 
+date , @dummy, `residents.confirmed`,`staff.confirmed`,
+ @dummy, @dummy, @dummy, @dummy, @dummy, @dummy, @dummy,
+  @dummy, @dummy, @dummy, @dummy, @dummy, @dummy, `web.group`,
+   @dummy,@dummy,@dummy,@dummy, `latitude`,`longitude`, `fips`, @dummy);
