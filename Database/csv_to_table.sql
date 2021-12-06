@@ -40,7 +40,7 @@ CREATE TABLE `covid_data`.`national_counts` (
 CREATE TABLE `covid_data`.`state_jurisdiction_counts` (
   id  int(3) unsigned not null AUTO_INCREMENT,
   `state` VARCHAR(45) NOT NULL DEFAULT '0',
-  `web.group` VARCHAR(45) NOT NULL DEFAULT '0',
+  `webGroup` VARCHAR(45) NOT NULL DEFAULT '0',
   /*`measure` VARCHAR(45) NOT NULL DEFAULT '0',
   `val` INT NOT NULL DEFAULT 0,
   `rate` VARCHAR(45) NOT NULL DEFAULT '0',*/
@@ -52,8 +52,8 @@ CREATE TABLE `covid_data`.`state_counts` (
   id  int(4) unsigned not null AUTO_INCREMENT,
   `date` DATETIME NULL,
   `state` VARCHAR(45) NOT NULL DEFAULT '0',
-  `residents.confirmed` VARCHAR(45) NOT NULL DEFAULT '0',
-  `staff.confirmed` VARCHAR(45) NOT NULL DEFAULT '0',
+  `residentsConfirmed` VARCHAR(45) NOT NULL DEFAULT '0',
+  `staffConfirmed` VARCHAR(45) NOT NULL DEFAULT '0',
   /*`residents.deaths` VARCHAR(45) NOT NULL DEFAULT '0',
   `staff.deaths` VARCHAR(45) NOT NULL DEFAULT '0',
   `residents.tadmin` VARCHAR(45) NOT NULL DEFAULT '0',
@@ -72,9 +72,9 @@ CREATE TABLE `covid_data`.`facility_counts`(
   id int(5) unsigned not null AUTO_INCREMENT,
   `state` VARCHAR(45) NOT NULL DEFAULT '0',
   `date` DATETIME NULL,
-  `residents.confirmed` VARCHAR(45) NOT NULL DEFAULT '0',
-  `staff.confirmed` VARCHAR(45) NOT NULL DEFAULT '0',
-  `web.group` VARCHAR(45) NOT NULL DEFAULT '0',
+  `residentsConfirmed` VARCHAR(45) NOT NULL DEFAULT '0',
+  `staffConfirmed` VARCHAR(45) NOT NULL DEFAULT '0',
+  `webGroup` VARCHAR(45) NOT NULL DEFAULT '0',
   `latitude` VARCHAR(45) NOT NULL DEFAULT '0',
   `longitude` VARCHAR(45) NOT NULL DEFAULT '0',
   `fips` VARCHAR(45) NOT NULL DEFAULT '0',
@@ -84,9 +84,9 @@ CREATE TABLE `covid_data`.`CA_facility` (
   id  int(6) unsigned not null AUTO_INCREMENT,
   `name` VARCHAR(45) NOT NULL DEFAULT '0', 
   `date` DATETIME NULL,
-  `resident.confirmed` VARCHAR(45) NOT NULL DEFAULT '0',
-  `staff.confirmed` VARCHAR(45) NOT NULL DEFAULT '0',
-  `web.group` VARCHAR(45) NOT NULL DEFAULT '0',
+  `residentConfirmed` VARCHAR(45) NOT NULL DEFAULT '0',
+  `staffConfirmed` VARCHAR(45) NOT NULL DEFAULT '0',
+  `webGroup` VARCHAR(45) NOT NULL DEFAULT '0',
   `latitude` VARCHAR(45) NOT NULL DEFAULT '0',
   `longtitude` VARCHAR(45) NOT NULL DEFAULT '0',
   `fips` VARCHAR(45) NOT NULL DEFAULT '0',
@@ -101,9 +101,9 @@ LINES TERMINATED BY '\n'
 IGNORE 1 ROWS
 (id, @dummy, @dummy,
 name,date,
- @dummy, `resident.confirmed`,`staff.confirmed`,
+ @dummy, `residentConfirmed`,`staffConfirmed`,
 @dummy, @dummy, @dummy, @dummy, @dummy, @dummy, @dummy, @dummy,
-@dummy, @dummy, @dummy, @dummy, @dummy, @dummy, `web.group`,
+@dummy, @dummy, @dummy, @dummy, @dummy, @dummy, `webGroup`,
 @dummy,@dummy,@dummy,@dummy, `latitude`,`longtitude`, `fips`, @dummy);
 
 LOAD DATA LOCAL INFILE  
@@ -134,7 +134,7 @@ LINES TERMINATED BY '\n'
 IGNORE 1 ROWS
 (date,
 state,
-`residents.confirmed`,
+`residentsConfirmed`,
 @dummy,
 @dummy,
 @dummy,
@@ -158,7 +158,7 @@ ENCLOSED BY '"'
 LINES TERMINATED BY '\n'
 IGNORE 1 ROWS
 /*( state, `web.group` , measure, val, rate, date);*/
-(state, `web.group` , @dummy, @dummy, @dummy, date);
+(state, `webGroup` , @dummy, @dummy, @dummy, date);
 
 LOAD DATA LOCAL INFILE  
 '../resources/csv/historical_facility_counts.csv'
@@ -169,7 +169,7 @@ LINES TERMINATED BY '\n'
 IGNORE 1 ROWS
 (@dummy, @dummy, 
 state, @dummy, 
-date , @dummy, `residents.confirmed`,`staff.confirmed`,
+date , @dummy, `residentsConfirmed`,`staffConfirmed`,
  @dummy, @dummy, @dummy, @dummy, @dummy, @dummy, @dummy,
-  @dummy, @dummy, @dummy, @dummy, @dummy, @dummy, `web.group`,
+  @dummy, @dummy, @dummy, @dummy, @dummy, @dummy, `webGroup`,
    @dummy,@dummy,@dummy,@dummy, `latitude`,`longitude`, `fips`, @dummy);
