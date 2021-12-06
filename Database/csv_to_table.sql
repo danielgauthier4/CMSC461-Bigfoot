@@ -40,7 +40,7 @@ CREATE TABLE `covid_data`.`national_counts` (
 CREATE TABLE `covid_data`.`state_jurisdiction_counts` (
   id  int(3) unsigned not null AUTO_INCREMENT,
   `state` VARCHAR(45) NOT NULL DEFAULT '0',
-  `web.group` VARCHAR(45) NOT NULL DEFAULT '0',
+  `webGroup` VARCHAR(45) NOT NULL DEFAULT '0',
   `measure` VARCHAR(45) NOT NULL DEFAULT '0',
   `val` INT NOT NULL DEFAULT 0,
   `rate` VARCHAR(45) NOT NULL DEFAULT '0',
@@ -52,20 +52,20 @@ CREATE TABLE `covid_data`.`state_counts` (
   id  int(4) unsigned not null AUTO_INCREMENT,
   `date` DATETIME NULL,
   `state` VARCHAR(45) NOT NULL DEFAULT '0',
-  `residents.confirmed` VARCHAR(45) NOT NULL DEFAULT '0',
-  `staff.confirmed` VARCHAR(45) NOT NULL DEFAULT '0',
-  `residents.deaths` VARCHAR(45) NOT NULL DEFAULT '0',
-  `staff.deaths` VARCHAR(45) NOT NULL DEFAULT '0',
-  `residents.tadmin` VARCHAR(45) NOT NULL DEFAULT '0',
-  `residents.tested` VARCHAR(45) NOT NULL DEFAULT '0',
-  `residents.active` VARCHAR(45) NOT NULL DEFAULT '0',
-  `staff.active` VARCHAR(45) NOT NULL DEFAULT '0',
-  `staff.initiated` VARCHAR(45) NOT NULL DEFAULT '0',
-  `residents.initiated` VARCHAR(45) NOT NULL DEFAULT '0',
-  `residents.completed` VARCHAR(45) NOT NULL DEFAULT '0',
-  `staff.completed` VARCHAR(45) NOT NULL DEFAULT '0',
-  `residents.vadmin` VARCHAR(45) NOT NULL DEFAULT '0',
-  `staff.vadmin` VARCHAR(45) NOT NULL DEFAULT '0',
+  `residentsConfirmed` VARCHAR(45) NOT NULL DEFAULT '0',
+  `staffConfirmed` VARCHAR(45) NOT NULL DEFAULT '0',
+  `residentsDeaths` VARCHAR(45) NOT NULL DEFAULT '0',
+  `staffDeaths` VARCHAR(45) NOT NULL DEFAULT '0',
+  `residentsTadmin` VARCHAR(45) NOT NULL DEFAULT '0',
+  `residentsTested` VARCHAR(45) NOT NULL DEFAULT '0',
+  `residentsActive` VARCHAR(45) NOT NULL DEFAULT '0',
+  `staffActive` VARCHAR(45) NOT NULL DEFAULT '0',
+  `staffInitiated` VARCHAR(45) NOT NULL DEFAULT '0',
+  `residentsInitiated` VARCHAR(45) NOT NULL DEFAULT '0',
+  `residentsCompleted` VARCHAR(45) NOT NULL DEFAULT '0',
+  `staffCompleted` VARCHAR(45) NOT NULL DEFAULT '0',
+  `residentsVadmin` VARCHAR(45) NOT NULL DEFAULT '0',
+  `staffVadmin` VARCHAR(45) NOT NULL DEFAULT '0',
   primary key (id));
   
 
@@ -96,22 +96,11 @@ FIELDS TERMINATED BY ','
 ENCLOSED BY '"'
 LINES TERMINATED BY '\n'
 IGNORE 1 ROWS
-(Date,
-State,
-`residents.confirmed`,
-`staff.confirmed`,
-`residents.deaths`,
-`staff.deaths`,
-`residents.tadmin`,
-`residents.tested`,
-`residents.active`,
-`staff.active`,
-`staff.initiated`,
-`residents.initiated`,
-`residents.completed`,
-`staff.completed`,
-`residents.vadmin`,
-`staff.vadmin`);
+(id,date,state, residentsConfirmed, staffConfirmed,
+residentsDeaths, staffDeaths, residentsTadmin,
+residentsTested, residentsActive, staffActive,
+staffInitiated, residentsInitiated, residentsCompleted,
+staffCompleted, residentsVadmin, staffVadmin);
 
 
 LOAD DATA LOCAL INFILE  
@@ -121,4 +110,4 @@ FIELDS TERMINATED BY ','
 ENCLOSED BY '"'
 LINES TERMINATED BY '\n'
 IGNORE 1 ROWS
-(State, `Web.Group`, Measure, Val, Rate, Date);
+(id,state, webGroup, measure, val, rate, date);
