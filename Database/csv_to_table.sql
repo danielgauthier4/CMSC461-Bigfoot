@@ -80,6 +80,32 @@ CREATE TABLE `covid_data`.`facility_counts`(
   `fips` VARCHAR(45) NOT NULL DEFAULT '0',
   primary key (id));
 
+CREATE TABLE `covid_data`.`CA_facility` (
+  id  int(6) unsigned not null AUTO_INCREMENT,
+  `name` VARCHAR(45) NOT NULL DEFAULT '0', 
+  `date` DATETIME NULL,
+  `resident.confirmed` VARCHAR(45) NOT NULL DEFAULT '0',
+  `staff.confirmed` VARCHAR(45) NOT NULL DEFAULT '0',
+  `web.group` VARCHAR(45) NOT NULL DEFAULT '0',
+  `latitude` VARCHAR(45) NOT NULL DEFAULT '0',
+  `longtitude` VARCHAR(45) NOT NULL DEFAULT '0',
+  `fips` VARCHAR(45) NOT NULL DEFAULT '0',
+  primary key (id));
+
+LOAD DATA LOCAL INFILE  
+'../resources/csv/cali_historical_facility_counts.csv'
+INTO TABLE CA_facility
+FIELDS TERMINATED BY ',' 
+ENCLOSED BY '"'
+LINES TERMINATED BY '\n'
+IGNORE 1 ROWS
+(id, @dummy, @dummy,
+name,date,
+ @dummy, `resident.confirmed`,`staff.confirmed`,
+@dummy, @dummy, @dummy, @dummy, @dummy, @dummy, @dummy, @dummy,
+@dummy, @dummy, @dummy, @dummy, @dummy, @dummy, `web.group`,
+@dummy,@dummy,@dummy,@dummy, `latitude`,`longtitude`, `fips`, @dummy);
+
 LOAD DATA LOCAL INFILE  
 '../resources/csv/nytimes_counts.csv'
 INTO TABLE nyt_counts
@@ -88,7 +114,6 @@ ENCLOSED BY '"'
 LINES TERMINATED BY '\n'
 IGNORE 1 ROWS
 (id,date,county,state,fips,cases,@dummy);
-
 
 LOAD DATA LOCAL INFILE  
 '../resources/csv/historical_national_counts.csv'
@@ -142,4 +167,10 @@ FIELDS TERMINATED BY ','
 ENCLOSED BY '"'
 LINES TERMINATED BY '\n'
 IGNORE 1 ROWS
-(@dummy, @dummy, state, @dummy, date , @dummy, `residents.confirmed`,`staff.confirmed`, @dummy, @dummy, @dummy, @dummy, @dummy, @dummy, @dummy, @dummy, @dummy, @dummy, @dummy, @dummy, @dummy, `web.group`, @dummy,@dummy,@dummy,@dummy, `latitude`,`longitude`, `fips`, @dummy);
+(@dummy, @dummy, 
+state, @dummy, 
+date , @dummy, `residents.confirmed`,`staff.confirmed`,
+ @dummy, @dummy, @dummy, @dummy, @dummy, @dummy, @dummy,
+  @dummy, @dummy, @dummy, @dummy, @dummy, @dummy, `web.group`,
+   @dummy,@dummy,@dummy,@dummy, `latitude`,`longitude`, `fips`, @dummy);
+
