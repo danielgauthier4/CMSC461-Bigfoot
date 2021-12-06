@@ -41,10 +41,6 @@ CREATE TABLE `covid_data`.`state_jurisdiction_counts` (
   id  int(3) unsigned not null AUTO_INCREMENT,
   `state` VARCHAR(45) NOT NULL DEFAULT '0',
   `webGroup` VARCHAR(45) NOT NULL DEFAULT '0',
->>>>>>> main
-  /*`measure` VARCHAR(45) NOT NULL DEFAULT '0',
-  `val` INT NOT NULL DEFAULT 0,
-  `rate` VARCHAR(45) NOT NULL DEFAULT '0',*/
   `date` DATETIME NULL,
   primary key (id));
   
@@ -55,19 +51,19 @@ CREATE TABLE `covid_data`.`state_counts` (
   `state` VARCHAR(45) NOT NULL DEFAULT '0',
   `residentsConfirmed` VARCHAR(45) NOT NULL DEFAULT '0',
   `staffConfirmed` VARCHAR(45) NOT NULL DEFAULT '0',
->>>>>>> main
-  /*`residents.deaths` VARCHAR(45) NOT NULL DEFAULT '0',
-  `staff.deaths` VARCHAR(45) NOT NULL DEFAULT '0',
-  `residents.tadmin` VARCHAR(45) NOT NULL DEFAULT '0',
-  `residents.tested` VARCHAR(45) NOT NULL DEFAULT '0',
-  `residents.active` VARCHAR(45) NOT NULL DEFAULT '0',
-  `staff.active` VARCHAR(45) NOT NULL DEFAULT '0',
-  `staff.initiated` VARCHAR(45) NOT NULL DEFAULT '0',
-  `residents.initiated` VARCHAR(45) NOT NULL DEFAULT '0',
-  `residents.completed` VARCHAR(45) NOT NULL DEFAULT '0',
-  `staff.completed` VARCHAR(45) NOT NULL DEFAULT '0',
-  `residents.vadmin` VARCHAR(45) NOT NULL DEFAULT '0',
-  `staff.vadmin` VARCHAR(45) NOT NULL DEFAULT '0',*/
+
+  `residentsDeaths` VARCHAR(45) NOT NULL DEFAULT '0',
+  `staffDeaths` VARCHAR(45) NOT NULL DEFAULT '0',
+  `residentsTadmin` VARCHAR(45) NOT NULL DEFAULT '0',
+  `residentsTested` VARCHAR(45) NOT NULL DEFAULT '0',
+  `residentsActive` VARCHAR(45) NOT NULL DEFAULT '0',
+  `staffActive` VARCHAR(45) NOT NULL DEFAULT '0',
+  `staffInitiated` VARCHAR(45) NOT NULL DEFAULT '0',
+  `residentsInitiated` VARCHAR(45) NOT NULL DEFAULT '0',
+  `residentsCompleted` VARCHAR(45) NOT NULL DEFAULT '0',
+  `staffCompleted` VARCHAR(45) NOT NULL DEFAULT '0',
+  `residentsVadmin` VARCHAR(45) NOT NULL DEFAULT '0',
+  `staffVadmin` VARCHAR(45) NOT NULL DEFAULT '0',
   primary key (id));
   
 CREATE TABLE `covid_data`.`facility_counts`(
@@ -77,7 +73,6 @@ CREATE TABLE `covid_data`.`facility_counts`(
   `residentsConfirmed` VARCHAR(45) NOT NULL DEFAULT '0',
   `staffConfirmed` VARCHAR(45) NOT NULL DEFAULT '0',
   `webGroup` VARCHAR(45) NOT NULL DEFAULT '0',
->>>>>>> main
   `latitude` VARCHAR(45) NOT NULL DEFAULT '0',
   `longitude` VARCHAR(45) NOT NULL DEFAULT '0',
   `fips` VARCHAR(45) NOT NULL DEFAULT '0',
@@ -107,7 +102,6 @@ name,date,
  @dummy, `residentConfirmed`,`staffConfirmed`,
 @dummy, @dummy, @dummy, @dummy, @dummy, @dummy, @dummy, @dummy,
 @dummy, @dummy, @dummy, @dummy, @dummy, @dummy, `webGroup`,
->>>>>>> main
 @dummy,@dummy,@dummy,@dummy, `latitude`,`longtitude`, `fips`, @dummy);
 
 LOAD DATA LOCAL INFILE  
@@ -136,10 +130,10 @@ FIELDS TERMINATED BY ','
 ENCLOSED BY '"'
 LINES TERMINATED BY '\n'
 IGNORE 1 ROWS
+<<<<<<< HEAD
 (date,
 state,
 `residentsConfirmed`,
->>>>>>> main
 @dummy,
 @dummy,
 @dummy,
@@ -154,7 +148,6 @@ state,
 @dummy,
 @dummy);
 
-
 LOAD DATA LOCAL INFILE  
 '../resources/csv/historical_state_jurisdiction_counts.csv'
 INTO TABLE state_jurisdiction_counts
@@ -164,7 +157,6 @@ LINES TERMINATED BY '\n'
 IGNORE 1 ROWS
 /*( state, `web.group` , measure, val, rate, date);*/
 (state, `webGroup` , @dummy, @dummy, @dummy, date);
->>>>>>> main
 
 LOAD DATA LOCAL INFILE  
 '../resources/csv/historical_facility_counts.csv'
