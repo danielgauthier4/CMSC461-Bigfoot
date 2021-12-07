@@ -9,7 +9,7 @@ var facilityCircles;
 var tooltip;
 
 // String sent to the Application Layer with date appended to the end
-var daterequestheader = 'localhost:8080/get?date='; // + <date value>
+var daterequestheader = 'http://localhost:8080/covid/nyt-counts/state/california/date/'; // + <date value>
 // Date is in format: YYYY-MM-DD
 // So full string would be something like: "localhost:8080/get?date=2010-07-15"
 
@@ -312,11 +312,35 @@ function transformPoints(points) {
 function requestDateData(date) {
 	var coviddatedata = dummydata; // Dummy data as default
 	
-	fetch(daterequestheader + date).then(function(response) { // Fetch data from Application Layer
+	var dateurl = date.replace(':', '-') + 'T05%3A00%3A00Z'; // Build string to pass in
+	
+	// Trying url directly from Swagger control page. No dice
+	//fetch("http://localhost:8080/covid/nyt-counts/state/california/date/2020-02-02T05%3A00%3A00Z")
+	fetch("http://localhost:8080/covid/nyt-counts/state/california/date/2020-02-02T05:00:00Z")
+		.then(function(response) { // Fetch data from Application Layer
 		response.text().then(function(text) { // Convert response to text
+			alert(text);
 			coviddatedata = text; // Use text as json string to parse
 		});
 	});
+	
+	/*
+	var pth = new URL("http://localhost:8080/covid/nyt-counts/state/california/date/2020-02-02T05%3A00%3A00Z");
+	var req = new XMLHttpRequest();
+	req.onreadystatechange = function(){
+		if (req.readyState == 4)
+		{
+			alert('response:\n' + req.responseText);
+		}
+	}
+	req.open("GET", pth, true);
+	req.send();
+	*/
+	
+	if (coviddatedata != dummydata)
+	{
+		alert('SUCCESS')
+	}
 	
 	var json = JSON.parse(coviddatedata);
 	
@@ -459,8 +483,11 @@ var dummydata = `
 }
 `
 
+// Dummy data disabled while testing with Swagger
+/*
 fetch('data/dummydata.json').then(function(response) { 
 	response.text().then(function(text) {
 		if (JSON.parse(text)) {dummydata = text;}
 	});
 });
+*/
