@@ -10,6 +10,7 @@ var tooltip;
 
 // String sent to the Application Layer with date appended to the end
 var daterequestheader = 'http://localhost:8080/covid/nyt-counts/state/california/date/'; // + <date value>
+
 // Date is in format: YYYY-MM-DD
 // So full string would be something like: "localhost:8080/get?date=2010-07-15"
 
@@ -103,76 +104,100 @@ function updateMap() {
 	
 	var isoDate = date.replace(':', '-');
 	
-	var json = requestDateData(date); // Grab data from Apache
+	// Grab data from Apache
+	requestDateData(isoDate).then(response => {
+		response.text().then(text => {
+			var jsonArray = Array.from(JSON.parse(text));
+			var countydata = jsonArray;
+
+			console.log(countydata);
+
+			var countyMax = -Infinity;
+			var countyMin = Infinity;
+			
+			counties.forEach(element => {
+				var FIPScode = element.getAttribute("fips");
+
+				var dataForThisCounty = undefined;
+				countydata.forEach(element => {
+					if (element.fips == FIPScode) {
+						dataForThisCounty = element;
+					}
+				});
+
+				// Check if entry for FIPScode exists
+				if (dataForThisCounty != undefined) {
+					var entry = dataForThisCounty;
+
+					if (entry.cases > countyMax) countyMax = entry.cases;
+					if (entry.cases < countyMin) countyMin = entry.cases;
+				}
+			});
+			
+			var countyDiff = countyMax - countyMin;
+			if ( countyDiff == 0 ) {countyDiff = countyMax;} // Avoid divisions by 0
+			
+			if ( countyMax == -Infinity || countyMin == Infinity ) 
+			{
+				document.getElementById("county-colorscale-min").innerText = "?? cases";
+				document.getElementById("county-colorscale-max").innerText = "?? cases";
+			}
+			else
+			{
+				document.getElementById("county-colorscale-min").innerText = countyMin + " cases";
+				document.getElementById("county-colorscale-max").innerText = countyMax + " cases";
+			}
+			
+			// For each county on map...
+			counties.forEach(element => {
+				var FIPScode = element.getAttribute("fips");
+
+				var dataForThisCounty = undefined;
+				countydata.forEach(element => {
+					if (element.fips == FIPScode) {
+						dataForThisCounty = element;
+					}
+				});
+
+				// Check if entry for FIPScode exists
+				if (dataForThisCounty != undefined) {
+					element.classList.remove("missing");
+
+					var entry = dataForThisCounty; // entry = <date, count>
+
+					// normalize color base
+					var base = 1 - ((entry.cases - countyMin) / countyDiff);
+
+					// Set color based on count
+					if (entry.date == isoDate) {
+						// If matching date, full saturation
+						element.style["fill"] = 'hsl(192,100%,'+ (base * 70 + 20) +'%)';
+					} else {
+						// If date doesn't match, zero saturation
+						element.style["fill"] = 'hsl(192,0%,'+ (base * 70 + 20) +'%)';
+					}
+
+					// Set tooltip string
+					element.setAttribute('tooltipstr', 
+						element.getAttribute('name') + " County" +
+						"\nDate: " + entry.date.toString() +
+						"\nCases: " + entry.cases.toString()
+						);
+				}
+				// Blank out county
+				else {
+					element.style["fill"] = null;
+					element.classList.add("missing");
+					element.removeAttribute("tooltipstr");
+				}
+			});
+		})
+	});
+
+	return;
 	
 	var countydata = json["counties"];	// Each entry is a County instance: <date, count>
 	var prisondata = json["prisons"];	// Each entry is a Prison instance: <date, count>
-
-	var countyMax = -Infinity;
-	var countyMin = Infinity;
-	
-	counties.forEach(element => {
-		var FIPScode = element.getAttribute("fips");
-		
-		// Check if entry for FIPScode exists
-		if (FIPScode in countydata) {
-			var entry = countydata[FIPScode];
-
-			if (entry.count > countyMax) countyMax = entry.count;
-			if (entry.count < countyMin) countyMin = entry.count;
-		}
-	});
-	
-	var countyDiff = countyMax - countyMin;
-	if ( countyDiff == 0 ) {countyDiff = countyMax;} // Avoid divisions by 0
-	
-	if ( countyMax == -Infinity || countyMin == Infinity ) 
-	{
-		document.getElementById("county-colorscale-min").innerText = "?? cases";
-		document.getElementById("county-colorscale-max").innerText = "?? cases";
-	}
-	else
-	{
-		document.getElementById("county-colorscale-min").innerText = countyMin + " cases";
-		document.getElementById("county-colorscale-max").innerText = countyMax + " cases";
-	}
-	
-	// For each county on map...
-    counties.forEach(element => {
-		var FIPScode = element.getAttribute("fips");
-		
-		// Check if entry for FIPScode exists
-		if (FIPScode in countydata) {
-			element.classList.remove("missing");
-
-			var entry = countydata[FIPScode]; // entry = <date, count>
-
-			// normalize color base
-			var base = 1 - ((entry.count - countyMin) / countyDiff);
-
-			// Set color based on count
-			if (entry.date == isoDate) {
-				// If matching date, full saturation
-				element.style["fill"] = 'hsl(192,100%,'+ (base * 70 + 20) +'%)';
-			} else {
-				// If date doesn't match, zero saturation
-				element.style["fill"] = 'hsl(192,0%,'+ (base * 70 + 20) +'%)';
-			}
-
-			// Set tooltip string
-			element.setAttribute('tooltipstr', 
-				element.getAttribute('name') + " County" +
-				"\nDate: " + entry.date.toString() +
-				"\nCases: " + entry.count.toString()
-				);
-		}
-		// Blank out county
-		else {
-			element.style["fill"] = null;
-			element.classList.add("missing");
-			element.removeAttribute("tooltipstr");
-		}
-    });
 
 	// calculate min and max for prisons
 	var prisonMax = -Infinity;
@@ -316,14 +341,11 @@ function requestDateData(date) {
 	
 	// Trying url directly from Swagger control page. No dice
 	//fetch("http://localhost:8080/covid/nyt-counts/state/california/date/2020-02-02T05%3A00%3A00Z")
-	fetch("http://localhost:8080/covid/nyt-counts/state/california/date/2020-02-02T05:00:00Z")
-		.then(function(response) { // Fetch data from Application Layer
-		response.text().then(function(text) { // Convert response to text
-			alert(text);
-			coviddatedata = text; // Use text as json string to parse
-		});
-	});
-	
+
+	console.log("Request: " + "http://localhost:8080/covid/nyt-counts/state/california/date/" + dateurl);
+
+	return fetch("http://localhost:8080/covid/nyt-counts/state/california/date/" + dateurl);
+
 	/*
 	var pth = new URL("http://localhost:8080/covid/nyt-counts/state/california/date/2020-02-02T05%3A00%3A00Z");
 	var req = new XMLHttpRequest();
@@ -336,28 +358,22 @@ function requestDateData(date) {
 	req.open("GET", pth, true);
 	req.send();
 	*/
-	
-	if (coviddatedata != dummydata)
-	{
-		alert('SUCCESS')
-	}
-	
-	var json = JSON.parse(coviddatedata);
-	
+}
+
+function cleanJson(text) {
+	var json = JSON.parse(text);
+				
 	var entries;
 	var keys;
 	
 	// Counties
 	entries = json["counties"];
-	for (k in entries)
-	{
+	for (k in entries) {
 		// Date or count is invalid or date is greater than input date
-		if ( 
-			!dateIsValid(entries[k].date) ||
+		if (!dateIsValid(entries[k].date) ||
 			!countIsValid(entries[k].count) ||
 			(datecmp(entries[k].date, date) == 1)
-			)
-		{
+			) {
 			// Remove from output
 			delete entries[k];
 		}
@@ -365,19 +381,17 @@ function requestDateData(date) {
 	
 	// Prisons
 	entries = json["prisons"];
-	for (k in entries)
-	{
+	for (k in entries) {
 		// Date or count is invalid or date is greater than input date
-		if ( 
-			!dateIsValid(entries[k].date) ||
+		if (!dateIsValid(entries[k].date) ||
 			!countIsValid(entries[k].count) ||
 			(datecmp(entries[k].date, date) == 1)
-			)
-		{
+			) {
 			// Remove from output
 			delete entries[k];
 		}
 	}
+
 	return json;
 }
 
