@@ -79,11 +79,11 @@ body {
 }
 
 #county-colorscale > .gradient {
-  background: linear-gradient(90deg, rgba(204,245,255,1) 0%, rgba(26,209,255,1) 50%, rgba(0,82,102,1) 100%);
+  background: linear-gradient(90deg, rgba(204, 245, 255, 1) 0%, rgba(26, 209, 255, 1) 50%, rgba(0, 82, 102, 1) 100%);
 }
 
 #prison-colorscale > .gradient {
-  background: linear-gradient(90deg, rgba(255,231,204,1) 0%, rgba(255,148,26,1) 50%, rgba(102,54,0,1) 100%);
+  background: linear-gradient(90deg, rgba(255, 231, 204, 1) 0%, rgba(255, 148, 26, 1) 50%, rgba(102, 54, 0, 1) 100%);
 }
 
 .colorscale-min {
