@@ -160,7 +160,7 @@ input[type="date"] {
 
 @media (prefers-color-scheme: dark) {
   body {
-    background: #212121;
+    background: #292929;
     color: white;
   }
 
@@ -169,7 +169,7 @@ input[type="date"] {
   }
 
   .controls, #mapid {
-    background: #424242;
+    background: #494949;
   }
 
   .controls[open] > summary {
@@ -177,7 +177,7 @@ input[type="date"] {
   }
 
   input[type="date"] {
-    background: #212121;
+    background: #323232;
     color: white;
   }
 
