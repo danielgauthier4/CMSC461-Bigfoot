@@ -358,6 +358,13 @@ function transformPoints(points) {
 function requestCountyData(date) {
 	var coviddatedata = dummydata; // Dummy data as default
 	
+	// If date is over limit
+	if ( datecmp(date, '2020-04-14') == 1 )
+	{
+		date = '2020-04-14'; // Clamp Date
+	}
+	
+	
 	var dateurl = date.replace(':', '-') + 'T05%3A00%3A00Z'; // Build string to pass in
 	
 	// Trying url directly from Swagger control page. No dice
@@ -367,8 +374,15 @@ function requestCountyData(date) {
 }
 
 function requestFacilityData(date) {
+	// If date is over limit
+	if ( datecmp(date, '2020-08-31') == 1 )
+	{
+		date = '2020-08-31'; // Clamp date
+	}
+	
+	
 	var dateurl = date.replace(':', '-') + 'T05%3A00%3A00Z'; // Build string to pass in
-
+	
 	return fetch("http://localhost:8080/covid/cali-counts/date/" + dateurl);
 }
 
