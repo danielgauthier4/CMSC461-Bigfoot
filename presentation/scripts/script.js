@@ -125,8 +125,6 @@ function updateMap() {
             var jsonArray = Array.from(JSON.parse(text));
             var countydata = jsonArray;
 
-            console.log(countydata);
-
             var countyMax = -Infinity;
             var countyMin = Infinity;
 
@@ -208,10 +206,9 @@ function updateMap() {
 
     requestFacilityData(isoDate).then((response) => {
         response.text().then((text) => {
-            var jsonArray = Array.from(JSON.parse(text));
-            var prisondata = jsonArray;
+            var jsonArray = JSON.parse(text);
 
-            console.log(prisondata);
+            var prisondata = Object.assign({}, ...jsonArray.map((x) => ({[x.facilityId]: x})))
 
             // calculate min and max for prisons
             var prisonMax = -Infinity;
@@ -221,12 +218,7 @@ function updateMap() {
                 var id = element.getAttribute("id");
 
                 // Check if entry for prison id exists
-                var dataForThisFacility = undefined;
-                prisondata.forEach((element) => {
-                    if (element.facilityId == id) {
-                        dataForThisFacility = element;
-                    }
-                });
+                var dataForThisFacility = prisondata[id];
 
                 if (dataForThisFacility != undefined) {
                     var entry = dataForThisFacility;
@@ -254,12 +246,7 @@ function updateMap() {
                 var id = element.getAttribute("id");
 
                 // Check if entry for prison id exists
-                var dataForThisFacility = undefined;
-                prisondata.forEach((element) => {
-                    if (element.facilityId == id) {
-                        dataForThisFacility = element;
-                    }
-                });
+                var dataForThisFacility = prisondata[id];
 
                 if (dataForThisFacility != undefined) {
                     element.classList.remove("missing");
@@ -314,6 +301,7 @@ function drawFacilities(facilities) {
 
         let circle = mapDoc.createElementNS("http://www.w3.org/2000/svg", "circle");
         circle.classList.add("prison");
+		circle.classList.add("missing");
         circle.setAttribute("cx", point.x);
         circle.setAttribute("cy", point.y);
         circle.setAttribute("r", 4);
@@ -356,8 +344,6 @@ function transformPoints(points) {
     var caliMaxX = 0.17933544298239068;
 
     var scaleFactor = svgInnerWidth / caliMaxX;
-
-    console.log(scaleFactor);
 
     return points.map((point) => {
         return new Point(point.x * scaleFactor + 35.8, point.y * scaleFactor + 22);
