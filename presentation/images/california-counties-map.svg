@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 424 450.3">
   <style>.county, .prison{stroke:black;stroke-width:.4;fill:#000}
+    .prison{stroke-width:.6;}
     .missing{opacity:.05;pointer-events:none;}
     @media (prefers-color-scheme: dark){.county, .prison{fill: #fff}}
-    .hovered:not(.missing){stroke:#fff;stroke-width:2;filter:drop-shadow(1px 1px 2px rgba(0, 0, 0, .48))}
+    .hovered:not(.missing){stroke:#fff;stroke-width:1.5;filter:drop-shadow(1px 1px 2px rgba(0, 0, 0, .48))}
     svg{filter: drop-shadow(1px 1px 2px rgba(0, 0, 0, .64)) }
     use{pointer-events:none;}</style>
   <g id="counties">
