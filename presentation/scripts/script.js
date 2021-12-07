@@ -105,7 +105,7 @@ function updateMap() {
 	var isoDate = date.replace(':', '-');
 	
 	// Grab data from Apache
-	requestDateData(isoDate).then(response => {
+	requestCountyData(isoDate).then(response => {
 		response.text().then(text => {
 			var jsonArray = Array.from(JSON.parse(text));
 			var countydata = jsonArray;
@@ -194,78 +194,99 @@ function updateMap() {
 		})
 	});
 
-	return;
-	
-	var countydata = json["counties"];	// Each entry is a County instance: <date, count>
-	var prisondata = json["prisons"];	// Each entry is a Prison instance: <date, count>
+	requestFacilityData(isoDate).then(response => {
+		response.text().then(text => {
+			var jsonArray = Array.from(JSON.parse(text));
+			var prisondata = jsonArray;
 
-	// calculate min and max for prisons
-	var prisonMax = -Infinity;
-	var prisonMin = Infinity;
-
-	facilityCircles.forEach(element => {
-		var id = element.getAttribute("id");
-		
-		// Check if entry for prison id exists
-		if (id in prisondata) {
-			var entry = prisondata[id];
-
-			if (entry.count > prisonMax) prisonMax = entry.count;
-			if (entry.count < prisonMin) prisonMin = entry.count; 
-		}
-	});
-
-	var prisonDiff = prisonMax - prisonMin;
-	if ( prisonDiff == 0 ) {prisonDiff = prisonMax;} // Avoid divisions by 0
-	
-	if ( prisonMax == -Infinity || prisonMin == Infinity ) 
-	{
-		document.getElementById("prison-colorscale-min").innerText = "?? cases";
-		document.getElementById("prison-colorscale-max").innerText = "?? cases";
-	}
-	else
-	{
-		document.getElementById("prison-colorscale-min").innerText = prisonMin + " cases";
-		document.getElementById("prison-colorscale-max").innerText = prisonMax + " cases";
-	}
-
-	// For each facility circle on map...
-	facilityCircles.forEach(element => {
-		var id = element.getAttribute("id");
-		
-		// Check if entry for prison id exists
-		if (id in prisondata) {
-			element.classList.remove("missing");
-
-			var entry = prisondata[id]; // entry = <date, count>			
+			console.log(prisondata);
 			
-			// normalize color base
-			var base = 1 - ((entry.count - prisonMin) / prisonDiff);
+			// calculate min and max for prisons
+			var prisonMax = -Infinity;
+			var prisonMin = Infinity;
 
-			// Set color based on count
-			if (entry.date == isoDate) {
-				// If matching date, full saturation
-				element.style["fill"] = 'hsl(32,100%,'+ (base * 70 + 20) +'%)';
-			} else {
-				// If date doesn't match, zero saturation
-				element.style["fill"] = 'hsl(32,0%,'+ (base * 70 + 20) +'%)';
+			facilityCircles.forEach(element => {
+				var id = element.getAttribute("id");
+				
+				// Check if entry for prison id exists
+				var dataForThisFacility = undefined;
+				prisondata.forEach(element => {
+					if (element.facilityId == id) {
+						dataForThisFacility = element;
+					}
+				});
+
+				if (dataForThisFacility != undefined) {
+					var entry = dataForThisFacility;
+
+					if (entry.residentsConfirmed > prisonMax) prisonMax = entry.residentsConfirmed;
+					if (entry.residentsConfirmed < prisonMin) prisonMin = entry.residentsConfirmed;
+				}
+			});
+
+			var prisonDiff = prisonMax - prisonMin;
+			if ( prisonDiff == 0 ) {prisonDiff = prisonMax;} // Avoid divisions by 0
+			
+			if ( prisonMax == -Infinity || prisonMin == Infinity ) 
+			{
+				document.getElementById("prison-colorscale-min").innerText = "?? cases";
+				document.getElementById("prison-colorscale-max").innerText = "?? cases";
 			}
-			
-			// Set tooltip string
-			element.setAttribute('tooltipstr', 
-				element.getAttribute('name') +
-				"\nDate: " + entry.date.toString() +
-				"\nCount: " + entry.count.toString()
-				);
-		}
-		// Blank out county
-		else {
-			element.style["fill"] = null;
-			element.classList.add("missing");
-			element.setAttribute('tooltipstr', '');
-		}
-	})
-	
+			else
+			{
+				document.getElementById("prison-colorscale-min").innerText = prisonMin + " cases";
+				document.getElementById("prison-colorscale-max").innerText = prisonMax + " cases";
+			}
+
+			// For each facility circle on map...
+			facilityCircles.forEach(element => {
+				var id = element.getAttribute("id");
+				
+				// Check if entry for prison id exists
+				var dataForThisFacility = undefined;
+				prisondata.forEach(element => {
+					if (element.facilityId == id) {
+						dataForThisFacility = element;
+					}
+				});
+
+				if (dataForThisFacility != undefined) {
+					element.classList.remove("missing");
+
+					var entry = dataForThisFacility; // entry = <date, count>			
+					
+					// normalize color base
+					if (prisonDiff == 0) {
+						var base = 0.5;
+					} else {
+						var base = 1 - ((entry.residentsConfirmed - prisonMin) / prisonDiff);
+					}
+
+					// Set color based on count
+					if (entry.date == isoDate) {
+						// If matching date, full saturation
+						element.style["fill"] = 'hsl(32,100%,'+ (base * 70 + 20) +'%)';
+					} else {
+						// If date doesn't match, zero saturation
+						element.style["fill"] = 'hsl(32,0%,'+ (base * 70 + 20) +'%)';
+					}
+					
+					// Set tooltip string
+					element.setAttribute('tooltipstr', 
+						element.getAttribute('name') +
+						"\nDate: " + entry.date.toString() +
+						"\nCount: " + entry.residentsConfirmed.toString()
+						);
+				}
+				// Blank out county
+				else {
+					element.style["fill"] = null;
+					element.classList.add("missing");
+					element.setAttribute('tooltipstr', '');
+				}
+			})
+		});
+	});
 }
 
 // Displays points on map
@@ -334,7 +355,7 @@ function transformPoints(points) {
 }
 
 // Returns JSON of data for given date recieved from Apache site (TODO)
-function requestDateData(date) {
+function requestCountyData(date) {
 	var coviddatedata = dummydata; // Dummy data as default
 	
 	var dateurl = date.replace(':', '-') + 'T05%3A00%3A00Z'; // Build string to pass in
@@ -342,22 +363,13 @@ function requestDateData(date) {
 	// Trying url directly from Swagger control page. No dice
 	//fetch("http://localhost:8080/covid/nyt-counts/state/california/date/2020-02-02T05%3A00%3A00Z")
 
-	console.log("Request: " + "http://localhost:8080/covid/nyt-counts/state/california/date/" + dateurl);
-
 	return fetch("http://localhost:8080/covid/nyt-counts/state/california/date/" + dateurl);
+}
 
-	/*
-	var pth = new URL("http://localhost:8080/covid/nyt-counts/state/california/date/2020-02-02T05%3A00%3A00Z");
-	var req = new XMLHttpRequest();
-	req.onreadystatechange = function(){
-		if (req.readyState == 4)
-		{
-			alert('response:\n' + req.responseText);
-		}
-	}
-	req.open("GET", pth, true);
-	req.send();
-	*/
+function requestFacilityData(date) {
+	var dateurl = date.replace(':', '-') + 'T05%3A00%3A00Z'; // Build string to pass in
+
+	return fetch("http://localhost:8080/covid/cali-counts/date/" + dateurl);
 }
 
 function cleanJson(text) {
