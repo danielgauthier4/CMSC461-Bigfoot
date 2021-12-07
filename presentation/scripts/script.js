@@ -185,14 +185,16 @@ function updateMap() {
                     // Set color based on count
                     if (entry.date == isoDate) {
                         // If matching date, full saturation
-                        element.style["fill"] = "hsl(192,100%," + (base * 70 + 20) + "%)";
+                        element.style["fill"] = "hsl(192,100%," + (base * 60 + 25) + "%)";
                     } else {
                         // If date doesn't match, zero saturation
-                        element.style["fill"] = "hsl(192,0%," + (base * 70 + 20) + "%)";
+                        element.style["fill"] = "hsl(192,0%," + (base * 60 + 25) + "%)";
                     }
 
                     // Set tooltip string
-                    element.setAttribute("tooltipstr", element.getAttribute("name") + " County" + "\nDate: " + entry.date.toString() + "\nCases: " + entry.cases.toString());
+                    element.setAttribute("tooltipstr", element.getAttribute("name") + " County" +
+						"\nDate: " + entry.date.toString() +
+						"\nCases: " + entry.cases.toString());
                 }
                 // Blank out county
                 else {
@@ -274,14 +276,17 @@ function updateMap() {
                     // Set color based on count
                     if (entry.date == isoDate) {
                         // If matching date, full saturation
-                        element.style["fill"] = "hsl(32,100%," + (base * 70 + 20) + "%)";
+                        element.style["fill"] = "hsl(32,100%," + (base * 60 + 25) + "%)";
                     } else {
                         // If date doesn't match, zero saturation
-                        element.style["fill"] = "hsl(32,0%," + (base * 70 + 20) + "%)";
+                        element.style["fill"] = "hsl(32,0%," + (base * 60 + 25) + "%)";
                     }
 
                     // Set tooltip string
-                    element.setAttribute("tooltipstr", element.getAttribute("name") + "\nDate: " + entry.date.toString() + "\nCount: " + entry.residentsConfirmed.toString());
+                    element.setAttribute("tooltipstr", element.getAttribute("name") +
+						"\nDate: " + entry.date.toString() +
+						"\nCases: " + entry.residentsConfirmed.toString() +
+						"\nDeaths: " + entry.residentsDeaths.toString());
                 }
                 // Blank out county
                 else {
