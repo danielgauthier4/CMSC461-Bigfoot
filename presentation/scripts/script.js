@@ -58,10 +58,12 @@ function prepWindow() {
         .then(json => {
             drawFacilities(json);
 
-            facilities = new KeyValueMapWithArray(mapDoc.getElementsByTagName("circle"), it => it.getAttribute("uid"));
+            facilities = new KeyValueMapWithArray(
+                mapDoc.getElementsByClassName("prison"),
+                it => it.getAttribute("uid")
+            );
 
             addMapListeners();
-
             updateMap();
         });
 }
