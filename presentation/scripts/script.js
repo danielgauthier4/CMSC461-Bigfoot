@@ -1,26 +1,43 @@
+/*
+	"script.js" for COVID-19 History Map
+	JavaScript code for displaying and interacting with site map of California.
+	
+	Team: Infinite Monkey Theorem
+	Authors: Campbell Jones, Isaiah Hull
+	GitHub:
+		https://github.com/447-IMT/Infinite-Monkey-Theorem
+	
+	Last Modified: 12/9/21
+*/
+
+// Display and html document variables
 var map;
 var mapDoc;
 var mapBounds;
 var mapTopUse;
+var tooltip;
 
+// Data variables. Both use 'KeyValueMapWithArray' class to store data. (See end of script)
 var counties;
 var facilities;
 
-var tooltip;
+// =================================================================================
+// Html Element Functions 
+// =================================================================================
 
 window.addEventListener("load", prepWindow, false);
 
 // Main display setup
 function prepWindow() {
+	// Retrieve elements from html document
     map = document.getElementById("mapid");
     mapDoc = map.contentDocument;
     mapBounds = map.getBoundingClientRect();
     topCountyUseElem = mapDoc.getElementById("top-county");
     topFacilityUseElem = mapDoc.getElementById("top-facility");
     counties = new KeyValueMapWithArray(mapDoc.getElementsByClassName("county"), it => it.getAttribute("uid"));
-
     tooltip = document.getElementById("tooltip");
-
+	
     // Error loading html, yeet out of script
     if (map.contentDocument === null || map.contentDocument === undefined) {
         alert("Failed to apply style to SVG.");
@@ -34,7 +51,8 @@ function prepWindow() {
 
     // Call updateMap() when calendar date is changed
     document.getElementById("date").addEventListener("input", updateMap, false);
-
+	
+	// Populate 'facilities' variable with map of circle elements from svg
     fetch("data/facilities.json")
         .then(response => response.json())
         .then(json => {
@@ -48,7 +66,9 @@ function prepWindow() {
         });
 }
 
+// Define user interactions for county and prison elements
 function addMapListeners() {
+	// Used below to populate 'counties' and 'facilities' variables
     function addListenersTo(elements, topUseElem) {
         elements.forEach(element => {
             // whenever the mouse moves on this element, move the tooltip to the mouse's position
@@ -86,21 +106,23 @@ function addMapListeners() {
 function updateMap() {
     // get the currently selected date as a string and validate it
     var date = new Date(document.getElementById("date").value + "T05:00:00Z");
-    if (!(date instanceof Date) || isNaN(date.valueOf())) {
+    if ( !(date instanceof Date) || isNaN(date.valueOf()) ) {
         date = new Date("0000-00-00");
     }
-
+	
     // function to normalize count based on min and difference between min and max
     function normalizeCount(count, min, diff) {
         return (diff > 0 && count > 0) ? 1 - (count - min) / diff : 1;
     }
-
+	
+	// Returns color based on count value. Saturation used if date matches active date
     function calcColor(entryDate, base, hue) {
         // If matching date, full saturation. If previous date, no saturation
         let saturation = (entryDate.valueOf() == date.valueOf()) ? "100%" : "0%";
         return "hsl(" + hue + "," + saturation + "," + (base * 60 + 25) + "%)";
     }
-
+	
+	// Returns pair of [min, max] values for given array
     function calcMinAndMax(array) {
         let min = Infinity, max = -Infinity;
         array.forEach(it => {
@@ -109,7 +131,8 @@ function updateMap() {
         })
         return [min, max];
     }
-
+	
+	// Updates map element colors using new data points
     function visualizeData(elements, dataPoints, colorscalePrefix, colorHue) {
         let filteredData = dataPoints.filter(it => it.isValid);
         let dataKVM = new KeyValueMapWithArray(filteredData, it => it.uid);
@@ -144,7 +167,7 @@ function updateMap() {
         });
     }
 
-    // Grab county data from Apache
+    // Grab county data from Maven server
     requestData("/nyt-counts/state/california", date)
         .then(response => response.json())
         .then(jsonArray => {
@@ -154,7 +177,7 @@ function updateMap() {
             visualizeData(counties, mapped, "county", 192);
         });
 
-    // Grab prison data from Apache
+    // Grab prison data from Maven server
     requestData("/cali-counts", date)
         .then(response => response.json())
         .then(jsonArray => {
@@ -168,12 +191,12 @@ function updateMap() {
 // Displays points on map
 function drawFacilities(facilities) {
     let coords = facilities.map(facility => new Coord(facility.lon, facility.lat));
-    let points = coords.map(convertCoords);
-    let normalized = normalizePoints(points);
-    let transformed = transformPoints(normalized);
+    let points = coords.map(convertCoords);		// [lon., lat.] -> [x, y]
+    let normalized = normalizePoints(points);	// [x, y] -> [0, 1] 
+    let transformed = transformPoints(normalized);	// [0, 1] -> Map canvas bounds
 
     let facilitiesGroup = mapDoc.getElementById("facilities");
-
+	
     for (let i = 0; i < facilities.length; i++) {
         let point = transformed[i];
         let facility = facilities[i];
@@ -190,7 +213,11 @@ function drawFacilities(facilities) {
     }
 }
 
-// Transforms coordinates from longitude, latitude to x, y
+// =================================================================================
+// Helper Functions
+// =================================================================================
+
+// Transforms coordinates from [longitude, latitude] to [x, y]
 function convertCoords(coord) {
     let lon = coord.lon;
     let lat = coord.lat;
@@ -210,7 +237,7 @@ function convertCoords(coord) {
 // Normalizes points to [0-1] range
 function normalizePoints(points) {
     let caliMin = new Point(0.9702356695802884, 0.7614055437283428);
-
+	
     return points.map(point => new Point(point.x - caliMin.x, point.y - caliMin.y));
 }
 
@@ -224,11 +251,16 @@ function transformPoints(points) {
     return points.map(point => new Point(point.x * scaleFactor + 35.8, point.y * scaleFactor + 22));
 }
 
-// Returns JSON of data for given date recieved from Apache site
+// Returns JSON of data for given date recieved from Maven site
 function requestData(endpoint, date) {
     return fetch("http://localhost:8080/covid" + endpoint + "/date/" + date.toISOString());
 }
 
+// =================================================================================
+// Classes
+// =================================================================================
+
+// Holds longitude and latitude values
 class Coord {
     constructor(lon, lat) {
         this.lon = lon;
@@ -236,6 +268,7 @@ class Coord {
     }
 }
 
+// Holds x and y values
 class Point {
     constructor(x, y) {
         this.x = x;
@@ -243,21 +276,24 @@ class Point {
     }
 }
 
+// Contains <uid, date, cases, deaths>. Used when fetching data from Maven Server (See updateMap())
 class DataPoint {
     constructor(uid, date, cases, deaths) {
-        this.uid = uid.toString();
-        this.date = new Date(date + "T05:00:00Z");
+        this.uid = uid.toString();	// Unique identifier
+        this.date = new Date(date + "T05:00:00Z");	// Date that this data point represents
         this.cases = parseInt(cases);
         this.deaths = (deaths !== undefined) ? parseInt(deaths) : undefined;
     }
-
+	
+	// Returns true if all values for this data point are valid
     get isValid() {
         return this.date instanceof Date && !isNaN(this.date.valueOf()) &&
             this.cases >= 0 && !isNaN(this.cases) && isFinite(this.cases) &&
             this.deaths === undefined || 
                 (this.deaths >= 0 && !isNaN(this.deaths) && isFinite(this.deaths));
     }
-
+	
+	// Returns tooltip string for this data point
     get tooltip() {
         return "\nDate: " + this.date.toDateString() +
             "\nCases: " + this.cases.toString() +
@@ -265,6 +301,7 @@ class DataPoint {
     }
 }
 
+// Contains an array and map of <key, array values> for given array and key function
 class KeyValueMapWithArray {
     constructor(arr, mapKeyPropGetter) {
         this.array = Array.from(arr);
