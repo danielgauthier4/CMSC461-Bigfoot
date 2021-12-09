@@ -11,61 +11,18 @@ TO RUN THIS SCRIPT
 		("SOURCE csv_to_table.sql;")
 */
 
-
+/*create database*/
 CREATE DATABASE covid_data;
 
 USE covid_data;
-
+ /*create nyt_counts and ca_facility table*/
 CREATE TABLE `covid_data`.`nyt_counts` (
-  id  int(1) unsigned not null AUTO_INCREMENT,
+  id  int(1) unsigned not null AUTO_INCREMENT, /*create unique id*/
   `date` DATETIME NULL,
   `county` VARCHAR(45) NOT NULL DEFAULT '0',
   `state` VARCHAR(45) NOT NULL DEFAULT '0',
   `fips` VARCHAR(45) NOT NULL DEFAULT '0',
-  /* `deaths` INT NOT NULL DEFAULT 0,*/
   `cases` INT NOT NULL DEFAULT 0, 
-  primary key (id));
-  
-
-CREATE TABLE `covid_data`.`national_counts` (
-  id  int(2) unsigned not null AUTO_INCREMENT,
-  `date` DATETIME NULL,
-  /*`measure` VARCHAR(45) NOT NULL DEFAULT '0',
-  `count` INT NOT NULL DEFAULT 0,
-  `reporting` INT NOT NULL DEFAULT 0,
-  `missing` VARCHAR(1024) NOT NULL DEFAULT '0',*/
-  primary key (id));
-
-
-CREATE TABLE `covid_data`.`state_jurisdiction_counts` (
-  id  int(3) unsigned not null AUTO_INCREMENT,
-  `state` VARCHAR(45) NOT NULL DEFAULT '0',
-  `webGroup` VARCHAR(45) NOT NULL DEFAULT '0',
-  /*`measure` VARCHAR(45) NOT NULL DEFAULT '0',
-  `val` INT NOT NULL DEFAULT 0,
-  `rate` VARCHAR(45) NOT NULL DEFAULT '0',*/
-  `date` DATETIME NULL,
-  primary key (id));
-  
-
-CREATE TABLE `covid_data`.`state_counts` (
-  id  int(4) unsigned not null AUTO_INCREMENT,
-  `date` DATETIME NULL,
-  `state` VARCHAR(45) NOT NULL DEFAULT '0',
-  `residentsConfirmed` VARCHAR(45) NOT NULL DEFAULT '0',
-  `staffConfirmed` VARCHAR(45) NOT NULL DEFAULT '0',
-  primary key (id));
-  
-CREATE TABLE `covid_data`.`facility_counts`(
-  id int(5) unsigned not null AUTO_INCREMENT,
-  `state` VARCHAR(45) NOT NULL DEFAULT '0',
-  `date` DATETIME NULL,
-  `residentsConfirmed` VARCHAR(45) NOT NULL DEFAULT '0',
-  `staffConfirmed` VARCHAR(45) NOT NULL DEFAULT '0',
-  `webGroup` VARCHAR(45) NOT NULL DEFAULT '0',
-  `latitude` VARCHAR(45) NOT NULL DEFAULT '0',
-  `longitude` VARCHAR(45) NOT NULL DEFAULT '0',
-  `fips` VARCHAR(45) NOT NULL DEFAULT '0',
   primary key (id));
 
 CREATE TABLE `covid_data`.`CA_facility` (
@@ -80,6 +37,7 @@ CREATE TABLE `covid_data`.`CA_facility` (
   `fips` VARCHAR(45) NOT NULL DEFAULT '0',
   primary key (id));
 
+/*load data from .csv files into corresponding tables. Using @dummy to only read in neccessary columns.*/
 LOAD DATA LOCAL INFILE  
 '../resources/csv/cali_historical_facility_counts.csv'
 INTO TABLE CA_facility
@@ -102,61 +60,4 @@ LINES TERMINATED BY '\n'
 IGNORE 1 ROWS
 (id,date,county,state,fips,cases,@dummy);
 
-LOAD DATA LOCAL INFILE  
-'../resources/csv/historical_national_counts.csv'
-INTO TABLE national_counts
-FIELDS TERMINATED BY ',' 
-ENCLOSED BY '"'
-LINES TERMINATED BY '\n'
-IGNORE 1 ROWS
-(id,date, @dummy, @dummy, @dummy, @dummy);
-
-
-LOAD DATA LOCAL INFILE  
-'../resources/csv/historical_state_counts.csv'
-INTO TABLE state_counts
-FIELDS TERMINATED BY ',' 
-ENCLOSED BY '"'
-LINES TERMINATED BY '\n'
-IGNORE 1 ROWS
-(date,
-state,
-`residentsConfirmed`,
-@dummy,
-@dummy,
-@dummy,
-@dummy,
-@dummy,
-@dummy,
-@dummy,
-@dummy,
-@dummy,
-@dummy,
-@dummy,
-@dummy,
-@dummy);
-
-
-LOAD DATA LOCAL INFILE  
-'../resources/csv/historical_state_jurisdiction_counts.csv'
-INTO TABLE state_jurisdiction_counts
-FIELDS TERMINATED BY ',' 
-ENCLOSED BY '"'
-LINES TERMINATED BY '\n'
-IGNORE 1 ROWS
-/*( state, `web.group` , measure, val, rate, date);*/
-(state, `webGroup` , @dummy, @dummy, @dummy, date);
-
-LOAD DATA LOCAL INFILE  
-'../resources/csv/historical_facility_counts.csv'
-INTO TABLE facility_counts
-FIELDS TERMINATED BY ',' 
-ENCLOSED BY '"'
-LINES TERMINATED BY '\n'
-IGNORE 1 ROWS
-(@dummy, @dummy, 
-state, @dummy, 
-date , @dummy, `residentsConfirmed`,`staffConfirmed`,
-@dummy, @dummy, @dummy, @dummy, @dummy, @dummy, @dummy,
-@dummy, @dummy, @dummy, @dummy, @dummy, @dummy, `webGroup`,
-@dummy,@dummy,@dummy,@dummy, @dummy, `latitude`,`longitude`, `fips`, @dummy);
+DELETE FROM nyt_counts WHERE id = 58744; /*delelete last row in nyt_counts table since it has incomplete data. */
