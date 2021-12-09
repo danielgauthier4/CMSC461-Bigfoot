@@ -60,49 +60,6 @@ CREATE TABLE `covid_data`.`nyt_counts` (
   `cases` INT NOT NULL DEFAULT 0,
   `deaths` INT NOT NULL DEFAULT 0,
   primary key (id));
-  
-
-CREATE TABLE `covid_data`.`national_counts` (
-  id  int(2) unsigned not null AUTO_INCREMENT,
-  `date` DATETIME NULL,
-  `measure` VARCHAR(45) NOT NULL DEFAULT '0',
-  `count` INT NOT NULL DEFAULT 0,
-  `reporting` INT NOT NULL DEFAULT 0,
-  `missing` VARCHAR(1024) NOT NULL DEFAULT '0',
-  primary key (id));
-
-
-CREATE TABLE `covid_data`.`state_jurisdiction_counts` (
-  id  int(3) unsigned not null AUTO_INCREMENT,
-  `state` VARCHAR(45) NOT NULL DEFAULT '0',
-  `web.group` VARCHAR(45) NOT NULL DEFAULT '0',
-  `measure` VARCHAR(45) NOT NULL DEFAULT '0',
-  `val` INT NOT NULL DEFAULT 0,
-  `rate` VARCHAR(45) NOT NULL DEFAULT '0',
-  `date` DATETIME NULL,
-  primary key (id));
-  
-
-CREATE TABLE `covid_data`.`state_counts` (
-  id  int(4) unsigned not null AUTO_INCREMENT,
-  `date` DATETIME NULL,
-  `state` VARCHAR(45) NOT NULL DEFAULT '0',
-  `residents.confirmed` VARCHAR(45) NOT NULL DEFAULT '0',
-  `staff.confirmed` VARCHAR(45) NOT NULL DEFAULT '0',
-  `residents.deaths` VARCHAR(45) NOT NULL DEFAULT '0',
-  `staff.deaths` VARCHAR(45) NOT NULL DEFAULT '0',
-  `residents.tadmin` VARCHAR(45) NOT NULL DEFAULT '0',
-  `residents.tested` VARCHAR(45) NOT NULL DEFAULT '0',
-  `residents.active` VARCHAR(45) NOT NULL DEFAULT '0',
-  `staff.active` VARCHAR(45) NOT NULL DEFAULT '0',
-  `staff.initiated` VARCHAR(45) NOT NULL DEFAULT '0',
-  `residents.initiated` VARCHAR(45) NOT NULL DEFAULT '0',
-  `residents.completed` VARCHAR(45) NOT NULL DEFAULT '0',
-  `staff.completed` VARCHAR(45) NOT NULL DEFAULT '0',
-  `residents.vadmin` VARCHAR(45) NOT NULL DEFAULT '0',
-  `staff.vadmin` VARCHAR(45) NOT NULL DEFAULT '0',
-  primary key (id));
-  
 
 LOAD DATA LOCAL INFILE  
 '../resources/csv/nytimes_counts.csv'
@@ -120,48 +77,6 @@ FIELDS TERMINATED BY ','
 ENCLOSED BY '"'
 LINES TERMINATED BY '\n'
 IGNORE 1 ROWS
-(id,facility_id,jurisdiction,state,name,date,source,residents_confirmed,staff_confirmed,residents_deaths,staff_deaths,residents_tadmin,residents_tested,residents_active,staff_active,population_feb20,residents_population,residents_initiated,staff_initiated,residents_completed,staff_completed,residents_vadmin,staff_vadmin,web_group,address,zipcode,city,county,latitude,longitude,county_fips,ice_field_office); 
+(id,facility_id,jurisdiction,state,name,date,source,residents_confirmed,staff_confirmed,residents_deaths,staff_deaths,residents_tadmin,residents_tested,residents_active,staff_active,population_feb20,residents_population,residents_initiated,staff_initiated,residents_completed,staff_completed,residents_vadmin,staff_vadmin,web_group,address,zipcode,city,county,latitude,longitude,county_fips,ice_field_office);
 
-LOAD DATA LOCAL INFILE  
-'../resources/csv/historical_national_counts.csv'
-INTO TABLE national_counts
-FIELDS TERMINATED BY ',' 
-ENCLOSED BY '"'
-LINES TERMINATED BY '\n'
-IGNORE 1 ROWS
-(id,date, measure, count, reporting, missing);
-
-
-LOAD DATA LOCAL INFILE  
-'../resources/csv/historical_state_counts.csv'
-INTO TABLE state_counts
-FIELDS TERMINATED BY ',' 
-ENCLOSED BY '"'
-LINES TERMINATED BY '\n'
-IGNORE 1 ROWS
-(Date,
-State,
-`residents.confirmed`,
-`staff.confirmed`,
-`residents.deaths`,
-`staff.deaths`,
-`residents.tadmin`,
-`residents.tested`,
-`residents.active`,
-`staff.active`,
-`staff.initiated`,
-`residents.initiated`,
-`residents.completed`,
-`staff.completed`,
-`residents.vadmin`,
-`staff.vadmin`);
-
-
-LOAD DATA LOCAL INFILE  
-'../resources/csv/historical_state_jurisdiction_counts.csv'
-INTO TABLE state_jurisdiction_counts
-FIELDS TERMINATED BY ',' 
-ENCLOSED BY '"'
-LINES TERMINATED BY '\n'
-IGNORE 1 ROWS
-(State, `Web.Group`, Measure, Val, Rate, Date);
+DELETE FROM nyt_counts WHERE id = 58744; /*delelete last row in nyt_counts table since it has incomplete data. */ 
