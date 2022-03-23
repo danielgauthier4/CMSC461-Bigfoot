@@ -1,4 +1,4 @@
-# Infinite-Monkey-Theorem-Backend
+# Bigfoot-Backend
 This repo is for the application and database layers for the Infinite Monkey Theorem Project.
 
 ## Required Software
