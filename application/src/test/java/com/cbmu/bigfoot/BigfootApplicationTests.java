@@ -1,10 +1,10 @@
-package com.cbmu.covidmap;
+package com.cbmu.bigfoot;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class CovidMapApplicationTests {
+class BigfootApplicationTests {
 
 	@Test
 	void contextLoads() {
