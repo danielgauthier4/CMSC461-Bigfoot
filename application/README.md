@@ -24,27 +24,27 @@ export PATH=$PATH:${JAVA_HOME}/bin:${MAVEN_HOME}/bin:${MYSQL_HOME}/bin
 In order to build the project, you need to be at the top level
 where the `pom.xml` lives.
 
-###To start with a clean build, type:
+### To start with a clean build, type:
 ```bash
 $ mvn clean
 ```
 
-###To build, type:
+### To build, type:
 ```bash
 $ mvn install
 ```
 
-###Commonly, people will do both:
+### Commonly, people will do both:
 ```bash
 $ mvn clean install
 ```
 
-###To run the project, type:
+### To run the project, type:
 ```bash
 mvn spring-boot:run
 ```
 
-###To view Swagger UI, go to this URL in your browser:
+### To view Swagger UI, go to this URL in your browser:
 `http://localhost:8080/bigfoot/swagger-ui.html`
 
 Our REST endpoints are listed under `main-controller`. 
