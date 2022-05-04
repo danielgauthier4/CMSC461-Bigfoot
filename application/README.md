@@ -45,6 +45,6 @@ mvn spring-boot:run
 ```
 
 ###To view Swagger UI, go to this URL in your browser:
-`http://localhost:8080/swagger-ui.html`
+`http://localhost:8080/bigfoot/swagger-ui.html`
 
 Our REST endpoints are listed under `main-controller`. 
