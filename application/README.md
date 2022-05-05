@@ -49,6 +49,6 @@ mvn spring-boot:run
 
 Our REST endpoints are listed under `main-controller`. 
 
-*Note: The Swagger UI won't show anything useful until the load the 5 database
+*Note: The Swagger UI won't show anything useful until you load the 5 database
 tables.  Please follow the [database/README.md](../database/README.md) 
 instructions to load the database tables with real data.*
