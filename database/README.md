@@ -18,7 +18,8 @@ Follow the instructions in the application [README.md](../application/README.md)
 In a bash shell, type:
 
 ```bash
-cd database
+cd CMSC461-Bigfoot/database
+
 mysql --local_infile=1 -u springuser -p                (you will be prompted for the password which is "ThePassword")
 ```
 
