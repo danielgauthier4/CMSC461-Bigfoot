@@ -3,10 +3,7 @@ package com.cbmu.bigfoot;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @Controller // This means that this class is a Controller
@@ -22,10 +19,31 @@ public class LocationController {
     Iterable<Location> getLocations() {
         log.info("Calling getLocations");
         // This returns a JSON or XML with the users
-        Iterable<Location> locations = locationRepository.findAll();
-        log.info("Found locations");
         return locationRepository.findAll();
     }
 
+    @GetMapping(path = "/state/{state}")
+    public @ResponseBody
+    Iterable<Location> getLocationsByState(@PathVariable("state") String state) {
+        log.info("Calling getLocationsByState: {}", state);
+        // This returns a JSON or XML with the users
+        return locationRepository.findAllByState(state);
+    }
 
+    @GetMapping(path = "/county/{county}")
+    public @ResponseBody
+    Iterable<Location> getLocationsByCounty(@PathVariable("county") String county) {
+        log.info("Calling getLocationsByCounty: {}", county);
+        // This returns a JSON or XML with the users
+        return locationRepository.findAllByCounty(county);
+    }
+
+    @GetMapping(path = "/state/{state}/county/{county}")
+    public @ResponseBody
+    Iterable<Location> getLocationsByStateAndCounty(@PathVariable("state") String state,
+                                                    @PathVariable("county") String county) {
+        log.info("Calling getLocationsByStateAndCounty: {}/{}", state, county);
+        // This returns a JSON or XML with the users
+        return locationRepository.findAllByStateAndCounty(state, county);
+    }
 }
