@@ -1,5 +1,5 @@
 # Bigfoot-Backend
-This repo is for the application and database layers for the Infinite Monkey Theorem Project.
+This repo is for the application and database layers for the BFROP Bigfoot project.
 
 ## Required Software
 In order to build this project, you will need to install the following:
@@ -39,7 +39,7 @@ tables for you based upon the Java Entity classes.  In the
 `spring.jpa.hibernate.ddl-auto: none` does **NOT** drop/create the database 
 tables.  This is the proper **production** setting for the property.  
 
-When initially setting up the database hough, you need this property value
+When initially setting up the database though, you need this property value
 instead: 
 
 ```
