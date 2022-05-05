@@ -48,3 +48,7 @@ mvn spring-boot:run
 `http://localhost:8080/bigfoot/swagger-ui.html`
 
 Our REST endpoints are listed under `main-controller`. 
+
+*Note: The Swagger UI won't show anything useful until the load the 5 database
+tables.  Please follow the [database/README.md](../database/README.md) 
+instructions to load the database tables with real data.*
