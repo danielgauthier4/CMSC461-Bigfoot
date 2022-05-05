@@ -35,7 +35,7 @@ $ mvn clean
 
 The Hibernate library in SpringBoot will automatically create your database
 tables for you based upon the Java Entity clases.  In the 
-[CMSC461-Bigfoot/application/src/main/resources/application.properties](src/main/resource/application.properties) file you will need to adjust the **spring.jpa.hibernate.ddl-auto** property.  The checked in setting of this property:
+[CMSC461-Bigfoot/application/src/main/resources/application.properties](https://github.com/danielgauthier4/CMSC461-Bigfoot/blob/main/application/src/main/resources/application.properties) file you will need to adjust the **spring.jpa.hibernate.ddl-auto** property.  The checked in setting of this property:
 `spring.jpa.hibernate.ddl-auto: none` does **NOT** drop/create the database 
 tables.  This is the proper **production** setting for the property.  
 
