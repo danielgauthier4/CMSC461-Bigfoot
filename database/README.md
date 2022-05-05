@@ -9,7 +9,7 @@ Check out the Bigfoot project from [github](https://github.com/danielgauthier4/C
 
 ## Building the backend
 
-Building the Java backend will create your database tables for you automatically.
+**Important: Building the Java backend will create your database tables for you automatically.**
 
 Follow the instructions in the application [README.md](../application/README.md) file.
 
