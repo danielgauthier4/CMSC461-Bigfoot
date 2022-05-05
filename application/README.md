@@ -21,13 +21,33 @@ export PATH=$PATH:${JAVA_HOME}/bin:${MAVEN_HOME}/bin:${MYSQL_HOME}/bin
 ```
 
 ## Build Instructions
+
 In order to build the project, you need to be at the top level
 where the `pom.xml` lives.
 
 ### To start with a clean build, type:
+
 ```bash
 $ mvn clean
 ```
+
+### Update the Hibernate mode
+
+The Hibernate library in SpringBoot will automatically create your database
+tables for you based upon the Java Entity clases.  In the 
+[CMSC461-Bigfoot/application/src/main/resources/application.properties](src/main/resource/application.properties) file you will need to adjust the **spring.jpa.hibernate.ddl-auto** property.  The checked in setting of this property:
+`spring.jpa.hibernate.ddl-auto: none` does **NOT** drop/create the database 
+tables.  This is the proper **production** setting for the property.  
+
+When initially setting up the load though, you need this property value
+instead: 
+
+```
+spring.jpa.hibernate.ddl-auto=create
+```
+
+Once you've loaded the database tables, you need to remember to change
+the property back to **none**.  Whatever you do, **DO NOT COMMIT application.properties with the value set to `create`**.  When people do a `git pull`, the next time they rebuild the application layer, their database will be deleted!
 
 ### To build, type:
 ```bash
